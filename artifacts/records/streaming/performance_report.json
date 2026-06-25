@@ -1,0 +1,22 @@
+{
+  "dataset": "dgraph_fin",
+  "event_count": 5000,
+  "scored_node_count": 9986,
+  "total_seconds": 0.11304279998876154,
+  "score_seconds": 0.07837579998886213,
+  "throughput_events_per_second": 44231.03462137428,
+  "throughput_scored_nodes_per_second": 88338.22234580871,
+  "score_throughput_nodes_per_second": 127411.77763313544,
+  "avg_latency_ms": 0.00784856799407792,
+  "p50_latency_ms": 0.007848567994077921,
+  "p95_latency_ms": 0.007848567994077921,
+  "p99_latency_ms": 0.007848567994077921,
+  "avg_event_end_to_end_ms": 0.022608559997752308,
+  "high_or_above_events": 840,
+  "risk_level_counts": {
+    "critical": 80,
+    "high": 760,
+    "low": 3043,
+    "medium": 1117
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "model_name": "xgboost_lightgbm_tabular_blend",
+  "valid_auc": 0.9145824862311437,
+  "train_size": 531486,
+  "valid_size": 59054,
+  "positive_ratio_train": 0.03471399058488841,
+  "feature_count": 470,
+  "model_path": "output\\ieee_cis\\models\\xgboost.joblib",
+  "aux_model_path": "output\\ieee_cis\\models\\lightgbm_aux.joblib",
+  "submission_path": "output\\ieee_cis\\submissions\\submission.csv",
+  "metrics_path": "output\\ieee_cis\\metrics\\xgboost_metrics.json",
+  "blend_rule": "0.8 * xgboost + 0.2 * lightgbm"
+}
