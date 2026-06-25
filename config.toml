@@ -1,0 +1,141 @@
+[paths]
+data_root = "data"
+output_dir = "output"
+cache_dir = "output/cache"
+model_dir = "output/models"
+metrics_dir = "output/metrics"
+submission_dir = "output/submissions"
+figure_dir = "output/figures"
+
+[datasets]
+dgraph_phase1 = "data/dgraph_phase1/phase1_gdata.npz"
+dgraph_fin = "data/DGraphFin/DGraphFin1"
+dgraph_fin2 = "data/DGraphFin/DGraphFin2"
+ieee_cis = "data/ieee-fraud-detection"
+elliptic_pp = "data/elliptic-plus-plus"
+ibm_aml = "data/ibm-aml"
+amlsim_sample = "data/amlsim/sample/outputs"
+
+[training]
+default_dataset = "dgraph_phase1"
+seed = 42
+valid_size = 0.1
+use_cached_features = true
+
+[reporting]
+metrics_path = "output/metrics/xgboost_metrics.json"
+output_path = "output/metrics/summary.md"
+importance_path = "output/figures/feature_importance.csv"
+importance_output_path = "output/figures/feature_importance.md"
+top_feature_count = 15
+
+[dashboard]
+output_path = "output/dashboard/index.html"
+
+[streaming]
+compose_file = "deploy/streaming/docker-compose.yml"
+wait_timeout_seconds = 120.0
+wait_interval_seconds = 2.0
+health_request_timeout_seconds = 5.0
+smoke_result_lines = 3
+
+[streaming.prototype]
+dataset = "dgraph_fin"
+event_count = 5000
+trace_top_k = 20
+
+[streaming.runtime]
+dataset = "dgraph_fin"
+data_path = "data/DGraphFin/DGraphFin1"
+output_dir = "output"
+kafka_bootstrap_servers = "localhost:9092"
+input_topic = "transactions.raw"
+output_topic = "transactions.risk"
+scorer_url = "http://localhost:8000/score-batch"
+host = "0.0.0.0"
+port = 8000
+batch_size = 256
+event_count = 5000
+replay_interval_ms = 0
+result_output_path = "output/streaming/kafka_risk_events.jsonl"
+consume_max_messages = 1000
+consume_timeout_seconds = 60
+score_http_event_count = 10
+
+[[streaming.health_endpoints]]
+name = "Kafka UI"
+url = "http://localhost:8088/actuator/health"
+
+[[streaming.health_endpoints]]
+name = "Flink UI"
+url = "http://localhost:8081/overview"
+
+[[streaming.health_endpoints]]
+name = "Risk health"
+url = "http://localhost:8000/health"
+
+[[risk_levels]]
+level = "critical"
+threshold = 0.85
+action = "freeze_and_manual_review"
+
+[[risk_levels]]
+level = "high"
+threshold = 0.65
+action = "manual_review"
+
+[[risk_levels]]
+level = "medium"
+threshold = 0.35
+action = "step_up_verification"
+
+[[risk_levels]]
+level = "low"
+threshold = 0.0
+action = "pass"
+
+[models.graph.lightgbm]
+n_estimators = 700
+learning_rate = 0.05
+num_leaves = 127
+subsample = 0.85
+colsample_bytree = 0.85
+reg_lambda = 1.0
+n_jobs = -1
+verbose = -1
+
+[models.graph.xgboost]
+n_estimators = 500
+max_depth = 8
+learning_rate = 0.05
+subsample = 0.85
+colsample_bytree = 0.85
+tree_method = "hist"
+n_jobs = 8
+
+[models.graph.blend]
+xgboost_weight = 0.9
+lightgbm_weight = 0.1
+
+[models.tabular.lightgbm]
+n_estimators = 900
+learning_rate = 0.05
+num_leaves = 255
+subsample = 0.85
+colsample_bytree = 0.85
+reg_lambda = 1.0
+n_jobs = -1
+verbose = -1
+
+[models.tabular.xgboost]
+n_estimators = 700
+max_depth = 10
+learning_rate = 0.05
+subsample = 0.85
+colsample_bytree = 0.85
+tree_method = "hist"
+n_jobs = 8
+
+[models.tabular.blend]
+xgboost_weight = 0.8
+lightgbm_weight = 0.2

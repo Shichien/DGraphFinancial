@@ -1,0 +1,41 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+build/
+dist/
+wheels/
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual environments and local environment files
+.venv/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Project-local data and generated outputs
+data/*
+!data/.gitkeep
+output/*
+!output/.gitkeep
+tmp/*
+!tmp/.gitkeep
+
+# Editor and OS files
+.idea/
+.DS_Store
+
+
+# 
