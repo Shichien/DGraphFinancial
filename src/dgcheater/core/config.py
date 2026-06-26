@@ -112,6 +112,7 @@ class StreamingRuntimeSettings:
     consume_max_messages: int
     consume_timeout_seconds: int
     score_http_event_count: int
+    database_url: str
 
     @classmethod
     def from_mapping(cls, data: dict[str, Any]) -> "StreamingRuntimeSettings":
@@ -132,6 +133,7 @@ class StreamingRuntimeSettings:
             consume_max_messages=int(data["consume_max_messages"]),
             consume_timeout_seconds=int(data["consume_timeout_seconds"]),
             score_http_event_count=int(data["score_http_event_count"]),
+            database_url=str(data["database_url"]),
         )
 
 

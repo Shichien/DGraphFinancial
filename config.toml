@@ -60,6 +60,7 @@ result_output_path = "output/streaming/kafka_risk_events.jsonl"
 consume_max_messages = 1000
 consume_timeout_seconds = 60
 score_http_event_count = 10
+database_url = "sqlite:///output/streaming/risk_events.sqlite"
 
 [[streaming.health_endpoints]]
 name = "Kafka UI"

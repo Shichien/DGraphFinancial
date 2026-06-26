@@ -1,10 +1,10 @@
 # Kafka/Flink Streaming Deployment
 
-本文档说明当前仓库新增的 Kafka + Flink 流式风险识别部署原型。它不是只写在报告里的架构图，而是包含可启动服务、Flink 作业、风险评分服务、Kafka producer 和结果 consumer 的完整本地部署包。
+本文档说明当前仓库新增的 Kafka + Flink + PostgreSQL 流式风险识别部署原型。它不是只写在报告里的架构图，而是包含可启动服务、Flink 作业、风险评分服务、Kafka producer、结果 consumer、事件库和实时大屏的完整本地部署包。
 
 ## 当前边界
 
-- 已完成：Kafka 输入主题、Flink 流处理作业、HTTP 风险评分服务、Kafka 输出主题、事件生产者、结果消费者、Docker Compose 部署文件。
+- 已完成：Kafka 输入主题、Flink 流处理作业、HTTP 风险评分服务、Kafka 输出主题、事件生产者、结果消费者、PostgreSQL 事件库、实时大屏服务、Docker Compose 部署文件。
 - 已完成：评分服务复用本项目已训练的 `XGBoost + LightGBM` 模型和统一图特征缓存。
 - 未完成：多节点云上部署、TLS/SASL 安全认证、Flink checkpoint 外部持久化、Kubernetes 编排、生产级监控告警。
 
@@ -29,7 +29,9 @@ DGraph-Fin replay producer
   -> Flink risk_job.py
   -> HTTP risk-scorer /score-batch
   -> Kafka topic transactions.risk
-  -> result consumer / Kafka UI
+  -> result consumer
+  -> PostgreSQL risk_events
+  -> live dashboard /api/risk-events
 ```
 
 ## 前置条件
@@ -44,6 +46,7 @@ DGraph-Fin replay producer
 just stream-up
 just stream-wait
 just stream-smoke
+just live-open
 ```
 
 这里的分层是：业务逻辑放在 Python 脚本中，运行环境由 Docker Compose 管理，任务编排由 `justfile` 承担。
@@ -53,6 +56,8 @@ just stream-smoke
 - Kafka UI: `http://localhost:8088`
 - Flink Web UI: `http://localhost:8081`
 - Risk scorer health: `http://localhost:8000/health`
+- Live dashboard: `http://localhost:8050`
+- Live dashboard health: `http://localhost:8050/health`
 
 ## 本地无 Kafka 的服务自检
 
@@ -88,6 +93,14 @@ uv run dgcheater-stream score-http-once --event-count 10
 - `src_node_score`
 - `dst_node_score`
 - `explanation`
+
+事件库表：
+
+- 表名：`risk_events`
+- 主键：`event_id`
+- 风险字段：`risk_score`、`risk_level`、`action`
+- 案件字段：`focus_node`、`status`、`review`
+- 审计字段：`trace_json`、`audit_json`、`created_at`
 
 ## 为什么模型服务独立于 Flink
 

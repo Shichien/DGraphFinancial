@@ -13,8 +13,10 @@ import requests
 import typer
 
 from ..core.config import APP_CONFIG
+from ..dashboard.builder import build_showcase_dashboard
 from ..datasets.registry import get_dataset_spec
 from ..datasets.loaders import TabularDataset, load_dataset_from_spec
+from .event_store import RiskEventStore, events_from_csv_and_trace, events_from_jsonl, resolve_database_url
 from .prototype import OnlineRiskScorer, build_transaction_stream
 
 
@@ -37,6 +39,11 @@ class RuntimeConfig:
     batch_size: int
     event_count: int
     replay_interval_ms: int
+    result_output_path: Path
+    consume_max_messages: int
+    consume_timeout_seconds: int
+    score_http_event_count: int
+    database_url: str
 
     @classmethod
     def from_env(cls) -> "RuntimeConfig":
@@ -57,6 +64,14 @@ class RuntimeConfig:
             batch_size=int(os.getenv("DGC_BATCH_SIZE", str(settings.batch_size))),
             event_count=int(os.getenv("DGC_EVENT_COUNT", str(settings.event_count))),
             replay_interval_ms=int(os.getenv("DGC_REPLAY_INTERVAL_MS", str(settings.replay_interval_ms))),
+            result_output_path=Path(os.getenv("DGC_RESULT_OUTPUT_PATH", str(settings.result_output_path))),
+            consume_max_messages=int(os.getenv("DGC_CONSUME_MAX_MESSAGES", str(settings.consume_max_messages))),
+            consume_timeout_seconds=int(os.getenv("DGC_CONSUME_TIMEOUT_SECONDS", str(settings.consume_timeout_seconds))),
+            score_http_event_count=int(os.getenv("DGC_SCORE_HTTP_EVENT_COUNT", str(settings.score_http_event_count))),
+            database_url=resolve_database_url(
+                os.getenv("DGC_DATABASE_URL", settings.database_url),
+                Path(os.getenv("DGC_OUTPUT_DIR", str(settings.output_dir))),
+            ),
         )
 
 
@@ -163,12 +178,16 @@ def consume_results(
     output_path: Path = typer.Option(APP_CONFIG.streaming.runtime.result_output_path),
     max_messages: int = typer.Option(APP_CONFIG.streaming.runtime.consume_max_messages),
     timeout_seconds: int = typer.Option(APP_CONFIG.streaming.runtime.consume_timeout_seconds),
+    write_store: bool = typer.Option(True),
 ) -> None:
-    """Consume risk events from Kafka into a jsonl file."""
+    """Consume risk events from Kafka into jsonl and the event store."""
     from confluent_kafka import Consumer
 
     config = RuntimeConfig.from_env()
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    store = RiskEventStore(config.database_url) if write_store else None
+    if store is not None:
+        store.init_schema()
     consumer = Consumer(
         {
             "bootstrap.servers": config.kafka_bootstrap_servers,
@@ -187,10 +206,95 @@ def consume_results(
                 continue
             if message.error():
                 raise RuntimeError(str(message.error()))
-            handle.write(message.value().decode("utf-8") + "\n")
+            line = message.value().decode("utf-8")
+            handle.write(line + "\n")
+            if store is not None:
+                store.upsert_events([json.loads(line)])
             count += 1
     consumer.close()
-    typer.echo(f"Consumed {count} messages from {config.output_topic} into {output_path}")
+    store_note = f" and {config.database_url}" if store is not None else ""
+    typer.echo(f"Consumed {count} messages from {config.output_topic} into {output_path}{store_note}")
+
+
+@app.command("init-store")
+def init_store() -> None:
+    """Initialize the local risk event store."""
+    config = RuntimeConfig.from_env()
+    store = RiskEventStore(config.database_url)
+    store.init_schema()
+    typer.echo(f"Initialized event store at {config.database_url}")
+
+
+@app.command("import-risk-events")
+def import_risk_events(
+    risk_path: Path = typer.Option(Path("output/streaming/risk_events.csv")),
+    trace_path: Path = typer.Option(Path("output/streaming/ring_trace_summary.json")),
+) -> None:
+    """Import generated risk event files into the event store."""
+    config = RuntimeConfig.from_env()
+    store = RiskEventStore(config.database_url)
+    count = store.upsert_events(events_from_csv_and_trace(risk_path, trace_path))
+    typer.echo(f"Imported {count} risk events into {config.database_url}")
+
+
+@app.command("import-jsonl")
+def import_jsonl(
+    jsonl_path: Path = typer.Option(APP_CONFIG.streaming.runtime.result_output_path),
+) -> None:
+    """Import Kafka result jsonl into the event store."""
+    config = RuntimeConfig.from_env()
+    store = RiskEventStore(config.database_url)
+    count = store.upsert_events(events_from_jsonl(jsonl_path))
+    typer.echo(f"Imported {count} risk events into {config.database_url}")
+
+
+@app.command("serve-dashboard")
+def serve_dashboard(
+    host: str = typer.Option("127.0.0.1"),
+    port: int = typer.Option(8050),
+    dashboard_path: Path = typer.Option(APP_CONFIG.dashboard.output_path),
+) -> None:
+    """Serve the showcase dashboard with a live risk-event API."""
+    import uvicorn
+    from fastapi import FastAPI
+    from fastapi.responses import FileResponse
+
+    config = RuntimeConfig.from_env()
+    build_showcase_dashboard(output_path=dashboard_path, output_dir=config.output_dir)
+    store = RiskEventStore(config.database_url)
+    store.init_schema()
+    api = FastAPI(title="DGCheater Live Dashboard", version="0.1.0")
+
+    @api.get("/")
+    def index() -> FileResponse:
+        return FileResponse(dashboard_path)
+
+    @api.get("/api/risk-events")
+    def risk_events(limit: int = 12) -> dict[str, object]:
+        summary = store.summary()
+        return {
+            "available": True,
+            "summary": {
+                "caseCount": summary.event_count,
+                "criticalCount": summary.critical_count,
+                "highCount": summary.high_count,
+                "mediumCount": summary.medium_count,
+                "lowCount": summary.low_count,
+                "auditCount": min(summary.event_count, limit),
+            },
+            "cases": store.load_cases(limit=limit),
+        }
+
+    @api.get("/health")
+    def health() -> dict[str, object]:
+        summary = store.summary()
+        return {
+            "status": "ok",
+            "database": config.database_url,
+            "riskEventCount": summary.event_count,
+        }
+
+    uvicorn.run(api, host=host, port=port)
 
 
 @app.command("score-http-once")

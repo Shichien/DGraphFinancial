@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from ..core.config import APP_CONFIG, DEFAULT_OUTPUT_DIR
+from ..streaming.event_store import RiskEventStore, default_sqlite_path
 from .assets import HTML_SCRIPT, HTML_STYLE, REFRESH_STYLE
 
 
@@ -861,6 +862,23 @@ def _build_policy_payload(primary_dataset: dict[str, object], output_dir: Path) 
 
 
 def _build_investigation_payload(output_dir: Path) -> dict[str, object]:
+    store_path = default_sqlite_path(output_dir)
+    if store_path.exists():
+        store = RiskEventStore(f"sqlite:///{store_path.as_posix()}")
+        summary = store.summary()
+        return {
+            "available": True,
+            "summary": {
+                "caseCount": summary.event_count,
+                "criticalCount": summary.critical_count,
+                "highCount": summary.high_count,
+                "mediumCount": summary.medium_count,
+                "lowCount": summary.low_count,
+                "auditCount": min(summary.event_count, 8),
+            },
+            "cases": store.load_cases(limit=8),
+        }
+
     risk_path = output_dir / "streaming" / "risk_events.csv"
     trace_path = output_dir / "streaming" / "ring_trace_summary.json"
     if not risk_path.exists() or not trace_path.exists():

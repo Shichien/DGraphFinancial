@@ -1932,6 +1932,13 @@ const renderFraudScenarios = () => {
 
 const renderPolicy = () => {
   const policy = payload.policy;
+  const summary = payload.investigation?.summary || {};
+  const liveCounts = {
+    critical: summary.criticalCount,
+    high: summary.highCount,
+    medium: summary.mediumCount,
+    low: summary.lowCount,
+  };
   document.getElementById('policy-grid').innerHTML = `
     <article class="policy-card">
       <span>模型版本</span>
@@ -1947,7 +1954,7 @@ const renderPolicy = () => {
             <span>${item.level}</span>
             <strong>${item.threshold.toFixed(2)}</strong>
             <span>${item.action}</span>
-            <span>命中 ${formatNumber(item.hitCount)} 条</span>
+            <span>命中 ${formatNumber(liveCounts[item.level] ?? item.hitCount)} 条</span>
           </div>
         `).join('')}
       </div>
@@ -2083,6 +2090,24 @@ const renderInvestigation = () => {
     });
   });
   renderCaseDetail();
+};
+
+const refreshLiveRiskEvents = async () => {
+  try {
+    const response = await fetch('/api/risk-events?limit=12', { cache: 'no-store' });
+    if (!response.ok) return;
+    const nextInvestigation = await response.json();
+    const previousFirstCase = payload.investigation?.cases?.[0]?.caseId || null;
+    const nextFirstCase = nextInvestigation?.cases?.[0]?.caseId || null;
+    payload.investigation = nextInvestigation;
+    if (!state.selectedCase || state.selectedCase === previousFirstCase) {
+      state.selectedCase = nextFirstCase;
+    }
+    renderPolicy();
+    renderInvestigation();
+  } catch (error) {
+    // 静态文件模式没有实时接口，保持构建时数据即可。
+  }
 };
 
 const renderBoard = () => {
@@ -2242,4 +2267,6 @@ renderGraph();
 renderFlow();
 renderBoard();
 renderSources();
+refreshLiveRiskEvents();
+setInterval(refreshLiveRiskEvents, 2000);
 """

@@ -13,6 +13,15 @@ dashboard:
 dashboard-open: dashboard
     powershell -NoProfile -Command "Start-Process (Resolve-Path 'output/dashboard/index.html')"
 
+live-store:
+    uv run dgcheater-stream import-risk-events
+
+live-dashboard:
+    uv run dgcheater-stream serve-dashboard --host 127.0.0.1 --port 8050
+
+live-open:
+    powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8050'"
+
 stream-up:
     uv run scripts/stream.py up
 

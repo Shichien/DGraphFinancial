@@ -108,16 +108,27 @@ uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DG
 
 - `output\streaming\transaction_stream_sample.csv`
 - `output\streaming\risk_events.csv`
+- `output\streaming\risk_events.sqlite`
 - `output\streaming\ring_trace_summary.json`
 - `output\streaming\performance_report.md`
 
-本机 5000 条事件回放实测：事件吞吐约 `44231.03` events/second，纯评分吞吐约 `127411.78` nodes/second，平均节点评分延迟约 `0.0078 ms`。这仍是单机 CSV 回放和微批评分原型，不等同于完整 Kafka 与 Flink 生产部署。
+本机 5000 条事件回放实测：事件吞吐约 `44231.03` events/second，纯评分吞吐约 `127411.78` nodes/second，平均节点评分延迟约 `0.0078 ms`。
 
 展示面板会读取这些流式产物，生成风险事件列表、案件处置状态、审计记录和一跳邻域溯源视图；同时补充循环转账、分散汇集、集中转出和账户团伙四类仿真欺诈剧本。
 
+本地实时大屏：
+
+```powershell
+just live-store
+just live-dashboard
+just live-open
+```
+
+页面地址是 `http://127.0.0.1:8050`。前端会轮询 `/api/risk-events`，从事件库读取最新风险案件。
+
 ## Kafka/Flink 部署原型
 
-当前已补充完整 Kafka 与 Flink 本地部署包，见 [kafka-flink.md](docs/online-deployment/kafka-flink.md)。
+当前已补充完整 Kafka、Flink 与 PostgreSQL 本地部署包，见 [kafka-flink.md](docs/online-deployment/kafka-flink.md)。
 
 部署组件包括：
 
@@ -126,6 +137,8 @@ uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DG
 - PyFlink 风险处理作业
 - 独立 HTTP 风险评分服务
 - Kafka 事件 producer 与结果 consumer
+- PostgreSQL 风险事件表
+- 实时大屏服务
 
 启动命令：
 

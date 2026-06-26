@@ -14,6 +14,7 @@ from ..core.config import APP_CONFIG
 from ..dgraph.data import DGraphRawData
 from ..dgraph.features import FeatureBundle, build_features, build_features_for_nodes, feature_cache_path, get_or_create_feature_cache
 from ..models.training import _build_known_label_neighbor_features
+from .event_store import RiskEventStore, events_from_csv_and_trace, resolve_database_url
 
 
 RISK_LEVELS = APP_CONFIG.risk_levels
@@ -219,6 +220,8 @@ def run_streaming_prototype(
     trace_summary = build_ring_trace_summary(raw, risk_frame, top_k=trace_top_k)
     trace_summary_path = stream_dir / "ring_trace_summary.json"
     trace_summary_path.write_text(json.dumps(trace_summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    store = RiskEventStore(resolve_database_url(None, output_dir))
+    store.upsert_events(events_from_csv_and_trace(risk_events_path, trace_summary_path))
 
     performance = {
         "dataset": dataset_key,

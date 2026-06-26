@@ -12,6 +12,7 @@ uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DG
 
 - `output/streaming/transaction_stream_sample.csv`
 - `output/streaming/risk_events.csv`
+- `output/streaming/risk_events.sqlite`
 - `output/streaming/ring_trace_summary.json`
 - `output/streaming/performance_report.json`
 - `output/streaming/performance_report.md`
@@ -23,7 +24,18 @@ uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DG
 - 风险等级：将风险分映射为 `low`、`medium`、`high`、`critical` 四档。
 - 风控动作：按风险等级输出 `pass`、`step_up_verification`、`manual_review`、`freeze_and_manual_review`。
 - 团伙溯源：对高风险事件抽取焦点节点一跳邻域，统计欺诈邻居、背景邻居、主导交易类型与时间跨度。
+- 事件落库：风险事件同步写入 SQLite 事件库，前端服务可直接轮询读取。
 - 性能实测：记录单机微批回放吞吐、评分吞吐、平均延迟和 P95/P99 延迟。
+
+## 本地实时大屏
+
+```powershell
+just live-store
+just live-dashboard
+just live-open
+```
+
+`live-store` 会把 `risk_events.csv` 和 `ring_trace_summary.json` 导入 `output/streaming/risk_events.sqlite`。`live-dashboard` 会启动 `http://127.0.0.1:8050`，前端每 2 秒请求 `/api/risk-events`，实时刷新风险等级、案件队列、一跳溯源和审计记录。
 
 ## 本次实测结果
 
@@ -46,4 +58,4 @@ uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DG
 
 ## 边界说明
 
-当前实现是单机 CSV 回放与微批模型评分原型，不是完整 Kafka 和 Flink 生产部署。它的价值在于把原先只停留在设计里的实时识别、风险等级、团伙溯源和性能测试落成可运行证据。后续可以把当前 CSV 回放器替换为 Kafka producer，把窗口状态迁移到 Flink，把 `risk_events.csv` 的输出接入风控台。
+当前实现是单机 CSV 回放、微批模型评分、SQLite 事件库和实时大屏服务。它的价值在于把原先只停留在设计里的实时识别、风险等级、团伙溯源、审计记录和性能测试落成可运行证据。Kafka、Flink、PostgreSQL 版本见 `docs/online-deployment/kafka-flink.md`。
