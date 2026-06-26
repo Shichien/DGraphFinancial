@@ -71,10 +71,10 @@
         columns: (1fr, 1fr),
         gutter: 10pt,
         [
-          #stat-card([主数据可信 AUC], [0.832586], note: [phase1_gdata.npz 本地验证])
+          #stat-card([DGraph-Fin AUC], [0.828120], note: [公开图基准验证])
         ],
         [
-          #stat-card([已跑通数据集], [6+], note: [主赛题、DGraph-Fin、Fin2、IEEE-CIS、Elliptic++、AMLSim], fill: rgb("#eef7f0"))
+          #stat-card([已跑通数据集], [5+], note: [DGraph-Fin、Fin2、IEEE-CIS、Elliptic++、AMLSim], fill: rgb("#eef7f0"))
         ],
         [
           #grid.cell(colspan: 2)[
@@ -103,7 +103,7 @@
         - 不把赛道二、赛道三混入主叙事
         - 不把 GNN 说成唯一方案
         - 不把在线系统说成已经完整落地
-        - 不把公开数据高分当成主成绩
+        - 不把公开数据高分当成当前可复现结果
       ]
     ],
   )
@@ -125,7 +125,7 @@
     columns: (1fr, 1fr, 1fr, 1fr),
     gutter: 12pt,
     [
-      #stat-card([图输入], [402 万节点], note: [17 维节点特征 + 492 万交易边], fill: paper)
+      #stat-card([图输入], [370 万节点], note: [17 维节点特征 + 430 万交易边], fill: paper)
     ],
     [
       #stat-card([特征], [126 维], note: [结构、时间、邻居、风险邻域], fill: paper)
@@ -139,38 +139,38 @@
   )
   #v(0.8em)
   #insight-box(title: [设计原则])[
-    - 优先保证主数据上的识别效果与可复现性
+    - 优先保证公开图基准上的识别效果与可复现性
     - 增强过程只依赖训练折已知标签
     - 优先选择稳定、高效、可解释的树模型，不把复杂 GNN 作为第一交付物
     - 流式处理和在线部署放在第二阶段扩展
   ]
 ]
 
-#slide(title: [主成绩增益链])[
+#slide(title: [可信结果链])[
   #grid(
     columns: (1fr, 1fr, 1fr),
     gutter: 12pt,
     [
-      #stat-card([阶段一], [0.7387], note: [原始 17 维特征 + LightGBM], fill: rgb("#f5f8f6"))
+      #stat-card([DGraph-Fin], [0.828120], note: [公开图基准], fill: rgb("#f5f8f6"))
     ],
     [
-      #stat-card([阶段二], [0.8218], note: [加入图结构与时间统计], fill: rgb("#eef7f0"))
+      #stat-card([DGraph-Fin2], [0.827919], note: [移除节点时间标签], fill: rgb("#eef7f0"))
     ],
     [
-      #stat-card([阶段三], [0.832586], note: [无泄漏风险邻域增强 + 树模型融合], fill: rgb("#fff8e8"), accent: amber.darken(25%))
+      #stat-card([IEEE-CIS], [0.914582], note: [时间切分验证], fill: rgb("#fff8e8"), accent: amber.darken(25%))
     ],
     [
       #grid.cell(colspan: 2)[
         #insight-box(title: [这条链路说明什么])[
-          - 提升不是靠碰运气调参
-          - 图结构与时间行为是主要增益源
-          - 风险邻域增强继续刻画了团伙传播信号
+          - 保留公开图基准、时间增强图和表格交易验证
+          - 不直接使用存在泄漏风险的字段
+          - 统一流程输出指标、提交文件和特征重要度
         ]
       ]
     ],
     [
       #accent-box(title: [一句话总结])[
-        主成绩从 0.7387 到 0.832586，体现的是从节点属性视角走向交易网络视角，再走向风险传播视角。
+        结果链体现的是从单一图基准走向多数据口径复核，而不是只追求单个离线分数。
       ]
     ],
   )
@@ -199,7 +199,6 @@
     gutter: 18pt,
     [
       #insight-box(title: [已接入数据形态])[
-        - 主赛题图节点反欺诈
         - 官方 DGraph-Fin
         - 时间增强版 DGraph-Fin2
         - 表格交易欺诈 IEEE-CIS
@@ -317,7 +316,7 @@
     columns: (1fr, 1fr, 1fr),
     gutter: 14pt,
     [
-      #stat-card([主数据成绩], [0.832586], note: [赛道一主识别链路已成型], fill: paper)
+      #stat-card([DGraph-Fin], [0.828120], note: [图识别链路已成型], fill: paper)
     ],
     [
       #stat-card([可信口径], [已主动排雷], note: [Fin2、IEEE、Elliptic++ 都做了复核], fill: paper)
@@ -329,7 +328,7 @@
   #v(0.8em)
   #insight-box(title: [答辩结论])[
     - 识别核心链路已经完成
-    - 主成绩可信，没有依赖明显泄漏
+    - 公开基准成绩可信，没有依赖明显泄漏
     - 大屏已经能现场演示仿真、识别、处置和审计闭环
   ]
   #v(0.7em)
@@ -351,7 +350,7 @@
     ],
     [
       #accent-box(title: [现场答辩重点])[
-        - 主数据识别链路
+        - DGraph-Fin 识别链路
         - 可信验证与反泄漏
         - 可视化证据和工程闭环
       ]

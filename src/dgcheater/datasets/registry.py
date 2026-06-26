@@ -20,17 +20,6 @@ class DatasetSpec:
 
 
 DATASET_SPECS: dict[str, DatasetSpec] = {
-    "dgraph_phase1": DatasetSpec(
-        key="dgraph_phase1",
-        display_name="DGraph Phase1",
-        problem_type="graph_binary_node_classification",
-        format="npz",
-        source_url="local backup",
-        default_path=APP_CONFIG.dataset_path("dgraph_phase1"),
-        download_required=False,
-        login_required=False,
-        notes="Current working competition dataset with train/test split and graph structure.",
-    ),
     "dgraph_fin": DatasetSpec(
         key="dgraph_fin",
         display_name="DGraph-Fin",

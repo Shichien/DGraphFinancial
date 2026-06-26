@@ -23,7 +23,7 @@
 
 默认读取：
 
-`data/dgraph_phase1/phase1_gdata.npz`
+`data/DGraphFin/DGraphFin1`
 
 项目默认路径、训练参数、模型参数、流式服务端点与健康检查端点集中放在 `config.toml`。如需临时覆盖数据路径，也可以继续通过命令行参数传入。
 
@@ -32,7 +32,7 @@
 ```powershell
 uv sync
 uv run dgcheater-train list-datasets
-uv run dgcheater-train train --dataset dgraph_phase1 --data-path data/dgraph_phase1/phase1_gdata.npz
+uv run dgcheater-train train --dataset dgraph_fin --data-path data/DGraphFin/DGraphFin1
 uv run dgcheater-train train --dataset dgraph_fin2 --data-path data/DGraphFin/DGraphFin2
 uv run dgcheater-train train --dataset ieee_cis --data-path data/ieee-fraud-detection
 uv run dgcheater-train train --dataset elliptic_pp --data-path data/elliptic-plus-plus
@@ -50,17 +50,14 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 
 ## 当前结论
 
-- 仅使用原始 17 维节点特征的 LightGBM 验证 AUC 约为 `0.7387`
-- 加入统一图结构与时间统计特征后，LightGBM 验证 AUC 约为 `0.8218`
-- 当前默认主方案为 `XGBoost + LightGBM` 轻量融合，验证 AUC 约为 `0.8326`
-- 官方 `DGraph-Fin` 数据上，同一套方案当前验证 AUC 约为 `0.8281`
+- 官方 `DGraph-Fin` 数据上，当前默认方案验证 AUC 约为 `0.8281`
 - 官方 `DGraph-Fin2` 数据上，去除会泄漏目标的节点时间标签后，当前可信验证 AUC 约为 `0.8279`
 - `IEEE-CIS` 数据上，改成基于 `TransactionDT` 的时间切分后，当前可信验证 AUC 约为 `0.9146`
 - `EllipticPlusPlus` 在修正实现口径后，当前严格复核结果约为 `0.9266`
 - 已新增单机交易流回放与在线评分原型，可输出风险等级、风控动作、团伙溯源摘要和性能实测报告
 - 已新增调查控制台展示，可基于流式风险事件查看案件状态、复核结论、审计记录和溯源结构
 
-这些结果均来自真实 `phase1_gdata.npz` 数据的本地验证实验。
+这些结果均来自当前已接入公开数据和本地实验产物。
 
 ## 公开参考
 
@@ -70,7 +67,7 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 - `external/DGraphFin/TGN-DGraphFin`
 - `external/DGraphFin/qiyue111-DgraphFin_anti_fraud`
 
-其中 `qiyue111-DgraphFin_anti_fraud` 公开写有更高离线 AUC，但其使用的是另一版 `dgraphfin.npz` 与带标签测试集评估流程，不能直接视作当前 `phase1_gdata.npz` 比赛数据上的可复现提交分数。本项目只吸收其中不会造成测试信息泄漏的结构特征与融合思路。
+其中 `qiyue111-DgraphFin_anti_fraud` 公开写有更高离线 AUC，但其使用的数据版本与评估流程和当前工程不完全一致，不能直接视作本项目可复现分数。本项目只吸收其中不会造成测试信息泄漏的结构特征与融合思路。
 
 ## 多数据集扩展
 
@@ -78,7 +75,6 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 
 已注册的数据集包括：
 
-- `dgraph_phase1`
 - `dgraph_fin`
 - `dgraph_fin2`
 - `ieee_cis`
@@ -143,4 +139,4 @@ just stream-smoke
 
 需要注意的是，`IEEE-CIS` 在随机分层切分下会得到更乐观的离线结果，因此当前项目已改为基于 `TransactionDT` 的时间切分口径。
 
-也需要注意的是，`EllipticPlusPlus` 这条线已经查出两层问题。第一层是我们历史实现里的口径问题，包括把 `Time step` 直接喂入特征、用地址最后出现时间伪造边时间戳，以及验证口径回退到训练段内随机切分；修正后分数从接近满分回落到约 `0.9266`。第二层是数据集本身的 actors csv 会把同一地址的全生命周期钱包特征重复贴在多个时间步行里，因此它更像公开 AML actor 分类补充集，而不是严格在线因果时序基准，不适合直接拿绝对分数与赛题主数据对比难度。
+也需要注意的是，`EllipticPlusPlus` 这条线已经查出两层问题。第一层是我们历史实现里的口径问题，包括把 `Time step` 直接喂入特征、用地址最后出现时间伪造边时间戳，以及验证口径回退到训练段内随机切分；修正后分数从接近满分回落到约 `0.9266`。第二层是数据集本身的 actors csv 会把同一地址的全生命周期钱包特征重复贴在多个时间步行里，因此它更像公开 AML actor 分类补充集，而不是严格在线因果时序基准，不适合直接拿绝对分数与图节点反欺诈基准对比难度。

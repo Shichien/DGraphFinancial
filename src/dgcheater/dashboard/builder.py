@@ -8,17 +8,8 @@ import json
 import numpy as np
 import pandas as pd
 
-from ..core.config import APP_CONFIG, DEFAULT_DATA_PATH, DEFAULT_OUTPUT_DIR
+from ..core.config import APP_CONFIG, DEFAULT_OUTPUT_DIR
 from .assets import HTML_SCRIPT, HTML_STYLE, REFRESH_STYLE
-
-
-PRIMARY_DATASET_COUNTS = {
-    "nodes": 4_020_000,
-    "edges": 4_920_000,
-    "raw_features": 17,
-    "train_labeled": 827_000,
-    "test_nodes": 355_000,
-}
 
 
 def build_showcase_dashboard(
@@ -114,7 +105,7 @@ def _render_html(payload: dict[str, object]) -> str:
             '        <div class="section-head">',
             '          <div>',
             "            <h2>数据资产概览</h2>",
-            "            <p>统一展示赛题主数据、公开基准数据、表格交易数据和仿真样例，便于评估输入结构、标签分布和验证口径。</p>",
+            "            <p>统一展示公开图基准、表格交易数据和仿真样例，便于评估输入结构、标签分布和验证口径。</p>",
             "          </div>",
             "        </div>",
             '        <div class="dataset-grid" id="dataset-grid"></div>',
@@ -280,7 +271,7 @@ def _render_html(payload: dict[str, object]) -> str:
 
 def _build_payload(output_dir: Path) -> dict[str, object]:
     datasets = _build_dataset_payloads(output_dir)
-    primary_dataset = next(item for item in datasets if item["key"] == "dgraph_phase1")
+    primary_dataset = next(item for item in datasets if item["key"] == "dgraph_fin")
     return {
         "meta": {
             "eyebrow": "Graph Fraud Intelligence Platform",
@@ -291,16 +282,16 @@ def _build_payload(output_dir: Path) -> dict[str, object]:
             "generatedAt": f"生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
             "mode": "赛道一作品展示",
             "stack": "图结构特征 + 双模型融合",
-            "primaryDataset": "dgraph_phase1",
+            "primaryDataset": "dgraph_fin",
             "primaryAuc": primary_dataset["trustedAuc"],
             "primaryLabel": "验证 AUC",
-            "primaryNote": "赛题主数据本地验证结果",
+            "primaryNote": "DGraph-Fin 公开基准验证结果",
         },
         "heroStats": [
             {
-                "label": "主数据 AUC",
+                "label": "DGraph-Fin AUC",
                 "value": f"{primary_dataset['trustedAuc']:.6f}",
-                "note": "基于官方训练索引构建验证评估",
+                "note": "基于公开图基准训练与验证切分",
             },
             {
                 "label": "数据覆盖",
@@ -405,9 +396,9 @@ def _build_payload(output_dir: Path) -> dict[str, object]:
                 "detail": "原始节点特征、交易类型统计、时间统计、一跳邻居聚合和无泄漏风险邻域增强进入主训练链路。",
             },
             {
-                "title": "主成绩与提交链路",
+                "title": "评估与提交链路",
                 "status": "已完成",
-                "detail": "phase1 主数据、DGraph-Fin 和 DGraph-Fin2 均可训练、评估并导出提交文件。",
+                "detail": "DGraph-Fin、DGraph-Fin2 和多类公开数据均可训练、评估并导出结果文件。",
             },
             {
                 "title": "团伙结构与可视化",
@@ -446,7 +437,7 @@ def _build_payload(output_dir: Path) -> dict[str, object]:
             },
             {
                 "title": "Elliptic++ 口径",
-                "body": "该数据集更适合作为地址级 AML 分类补充基准，展示时不将其绝对分数与赛题主数据直接比较。",
+                "body": "该数据集更适合作为地址级 AML 分类补充基准，展示时不将其绝对分数与图节点反欺诈基准直接比较。",
             },
             {
                 "title": "公开结果对比原则",
@@ -460,7 +451,6 @@ def _build_payload(output_dir: Path) -> dict[str, object]:
             r"data\\DGraphFin\\DGraphFin2\\dgraphfinv2_edge_timestamp.npy",
             r"data\\ieee-fraud-detection",
             r"data\\amlsim\\sample\\outputs",
-            r"output\\dgraph_phase1\\metrics\\xgboost_metrics.json",
             r"output\\dgraph_fin\\metrics\\xgboost_metrics.json",
             r"output\\dgraph_fin2\\metrics\\xgboost_metrics.json",
             r"output\\ieee_cis\\metrics\\xgboost_metrics.json",
@@ -472,7 +462,6 @@ def _build_payload(output_dir: Path) -> dict[str, object]:
 
 
 def _build_dataset_payloads(output_dir: Path) -> list[dict[str, object]]:
-    phase1_metrics = _read_metrics(output_dir / "dgraph_phase1" / "metrics" / "xgboost_metrics.json")
     dgraph_fin_metrics = _read_metrics(output_dir / "dgraph_fin" / "metrics" / "xgboost_metrics.json")
     dgraph_fin2_metrics = _read_metrics(output_dir / "dgraph_fin2" / "metrics" / "xgboost_metrics.json")
     ieee_metrics = _read_metrics(output_dir / "ieee_cis" / "metrics" / "xgboost_metrics.json")
@@ -486,43 +475,12 @@ def _build_dataset_payloads(output_dir: Path) -> list[dict[str, object]]:
 
     return [
         {
-            "key": "dgraph_phase1",
-            "name": "DGraph Phase1",
-            "tagline": "赛题主数据",
-            "modality": "图节点反欺诈",
-            "trustedAuc": phase1_metrics["valid_auc"],
-            "summary": "赛题主数据用于评估大规模匿名交易关系图上的欺诈用户识别能力，是本作品的核心评测对象。",
-            "badges": ["主成绩", "图数据", "可信口径"],
-            "metrics": [
-                {"label": "节点", "value": PRIMARY_DATASET_COUNTS["nodes"], "approximate": True},
-                {"label": "边", "value": PRIMARY_DATASET_COUNTS["edges"], "approximate": True},
-                {"label": "验证样本", "value": phase1_metrics["valid_size"]},
-                {"label": "特征维度", "value": phase1_metrics["feature_count"]},
-            ],
-            "annotations": [
-                {"label": "训练样本", "value": f"{phase1_metrics['train_size']:,}"},
-                {"label": "训练正样本占比", "value": format_ratio_value(phase1_metrics["positive_ratio_train"])},
-                {"label": "原始特征", "value": "17 维匿名节点特征"},
-                {"label": "图时间范围", "value": "约 2 年匿名交易序列"},
-            ],
-            "availability": (
-                "原始数据与实验产物均可访问，支持复现实验和提交文件生成"
-                if DEFAULT_DATA_PATH.exists()
-                else "展示使用实验指标、统计摘要和提交产物"
-            ),
-            "trustLine": "主成绩口径",
-            "trustNote": "使用官方训练索引并在训练集内划分验证段，不混用测试标签信息。",
-            "caution": "作为提交作品的核心评测数据，所有效果陈述以该数据集为主。",
-            "topFeatures": _read_top_features(output_dir / "dgraph_phase1" / "figures" / "feature_importance.csv"),
-            "profile": _phase1_profile(phase1_metrics),
-        },
-        {
             "key": "dgraph_fin",
             "name": "DGraph-Fin",
             "tagline": "官方公开基准",
             "modality": "图节点反欺诈",
             "trustedAuc": dgraph_fin_metrics["valid_auc"],
-            "summary": "官方公开图基准，与赛题主图结构接近，用于展示图特征方案在相近数据上的迁移稳定性。",
+            "summary": "官方公开图基准，用于展示图特征方案在大规模匿名交易关系网络上的识别能力。",
             "badges": ["公开数据", "图数据", "迁移验证"],
             "metrics": [
                 {"label": "节点", "value": dgraph_fin_local["nodes"]},
@@ -537,9 +495,9 @@ def _build_dataset_payloads(output_dir: Path) -> list[dict[str, object]]:
                 {"label": "时间范围", "value": f"edge timestamp {dgraph_fin_local['time_range']}"},
             ],
             "availability": "公开图基准与实验产物完整接入。",
-            "trustLine": "最接近主赛题的公开图基准",
-            "trustNote": "和主方案共用图结构、时间统计和无泄漏邻域增强流程，验证迁移稳定性。",
-            "caution": "用于验证图特征方案在相近公开数据上的迁移表现。",
+            "trustLine": "核心公开图基准",
+            "trustNote": "训练、验证和测试索引严格分离，图结构、时间统计和风险邻域特征均限定在可用输入范围内。",
+            "caution": "用于验证图特征方案在大规模交易关系图上的识别表现。",
             "topFeatures": _read_top_features(output_dir / "dgraph_fin" / "figures" / "feature_importance.csv"),
             "profile": _dgraph_fin_profile(dgraph_fin_local),
         },
@@ -671,10 +629,10 @@ def _build_dataset_payloads(output_dir: Path) -> list[dict[str, object]]:
                 {"label": "接入状态", "value": "接口注册"},
                 {"label": "验证要求", "value": "按时间列切分"},
             ],
-            "availability": "扩展接口展示，不纳入主成绩。",
+            "availability": "扩展接口展示，不纳入公开基准结果。",
             "trustLine": "扩展口径",
             "trustNote": "正式评估需锁定标签列、时间列和训练切分。",
-            "caution": "不参与主成绩对比。",
+            "caution": "不参与公开基准结果对比。",
             "topFeatures": ["接入正式数据后输出特征重要度。"],
             "profile": _ibm_aml_profile(),
         },
@@ -1211,46 +1169,6 @@ def _bars_from_counts(items: list[tuple[str, int]], colors: list[str] | None = N
         {"label": label, "value": int(value), "color": palette[idx % len(palette)]}
         for idx, (label, value) in enumerate(items)
     ]
-
-
-def _phase1_profile(metrics: dict[str, object]) -> dict[str, object]:
-    return {
-        "distributionTitle": "标签分布",
-        "distribution": _bars_from_counts(
-            [
-                ("正常用户", 1_260_000),
-                ("欺诈用户", 16_300),
-                ("背景用户", 2_744_000),
-            ],
-            ["#8ee0c8", "#ff7c6b", "#6f8f97"],
-        ),
-        "splitTitle": "训练与提交切分",
-        "splits": _bars_from_counts(
-            [
-                ("训练节点", int(metrics["train_size"])),
-                ("验证节点", int(metrics["valid_size"])),
-                ("测试节点", PRIMARY_DATASET_COUNTS["test_nodes"]),
-            ],
-            ["#f2b35d", "#8ee0c8", "#9aa8ff"],
-        ),
-        "schema": [
-            {"name": "x", "detail": "约 402 万 x 17"},
-            {"name": "y", "detail": "0/1 目标，2/3 背景"},
-            {"name": "edge_index", "detail": "约 492 万条有向边"},
-            {"name": "edge_type", "detail": "交易关系类型"},
-            {"name": "edge_timestamp", "detail": "匿名交易时间"},
-            {"name": "test_mask", "detail": "待提交节点"},
-        ],
-        "sampleTitle": "数据状态",
-        "sample": {
-            "columns": ["项目", "状态"],
-            "rows": [
-                {"项目": "主数据统计", "状态": "已汇总"},
-                {"项目": "实验产物", "状态": "指标和提交文件已生成"},
-                {"项目": "提交输出", "状态": "test_mask 节点二维概率"},
-            ],
-        },
-    }
 
 
 def _dgraph_fin_profile(summary: dict[str, object]) -> dict[str, object]:

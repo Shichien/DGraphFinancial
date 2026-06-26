@@ -5,7 +5,7 @@
 ## P0 本轮必须补齐
 
 - [x] 交易流仿真与回放
-  - 基于本地 `DGraph-Fin` 或 `phase1` 图数据，按边时间戳抽样生成交易事件流。
+  - 基于本地 `DGraph-Fin` 图数据，按边时间戳抽样生成交易事件流。
   - 输出事件字段：事件序号、时间戳、源节点、目标节点、交易类型、源/目标标签、渠道、金额、设备指纹。
   - 验收：可通过 CLI 生成 `output/streaming/transaction_stream_sample.csv`。
 

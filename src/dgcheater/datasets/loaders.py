@@ -16,8 +16,6 @@ def load_dataset_from_spec(spec: DatasetSpec, data_path: Path | None = None) -> 
     if path is None:
         raise FileNotFoundError(f"{spec.display_name} has no local default path configured.")
 
-    if spec.key in {"dgraph_phase1"}:
-        return load_raw_data(path)
     if spec.key == "dgraph_fin":
         return load_dgraph_fin_dataset(path)
     if spec.key == "dgraph_fin2":
