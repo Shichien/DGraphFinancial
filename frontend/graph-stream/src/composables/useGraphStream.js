@@ -87,12 +87,7 @@ export function useGraphStream(intervalMs = 650) {
     const normalized = nextView === "cumulative" ? "cumulative" : "window";
     if (normalized === graphView.value) return;
     graphView.value = normalized;
-    snapshot.value = null;
-    replayToken.value += 1;
     await refresh({ force: true });
-    window.setTimeout(() => {
-      replayToken.value += 1;
-    }, 40);
   }
 
   async function replay() {

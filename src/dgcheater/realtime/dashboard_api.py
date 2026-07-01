@@ -433,7 +433,7 @@ def _snapshot_from_runtime(source: DemoRuntime, view: str = "window") -> dict[st
             "mode": source.source.mode,
             "position": source.event_total,
             "totalEvents": source.event_total,
-            "progress": 0.0,
+            "progress": 1.0,
             "eventsPerSecond": 0.0,
             "currentTimestamp": events[0]["timestamp"] if events else 0,
             "windowSize": len(events),
