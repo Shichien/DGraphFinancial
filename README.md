@@ -15,7 +15,8 @@
 - `docs/report/` Typst 报告
 - `docs/presentation/` Typst 答辩稿
 - `docs/` 多数据集接入说明
-- `output/` 训练产物、提交文件与图表
+- `artifacts/` 最终报告、答辩稿和交付材料
+- `tmp/` 本地运行指标、临时导出和中间结果
 
 ## 数据准备
 
@@ -29,7 +30,7 @@
 
 `data/runtime-artifacts/output`
 
-如果本地 `output/` 目录下已经有同名产物，程序会优先使用 `output/`；如果没有，会自动读取 `data/runtime-artifacts/output`。
+实时大屏启动时直接读取 `data/runtime-artifacts/output` 下的运行产物，不要求项目根目录存在 `output/`。
 
 ## 快速开始
 
@@ -41,7 +42,8 @@ uv run dgcheater-train train --dataset dgraph_fin2 --data-path data/DGraphFin/DG
 uv run dgcheater-train train --dataset ieee_cis --data-path data/ieee-fraud-detection
 uv run dgcheater-train train --dataset elliptic_pp --data-path data/elliptic-plus-plus
 uv run dgcheater-train report-metrics
-typst compile docs/report/competition-report.typ output/competition-report.pdf
+New-Item -ItemType Directory -Force artifacts/final/report | Out-Null
+typst compile --root . docs/report/competition-report.typ artifacts/final/report/competition-report.pdf
 ```
 
 实时大屏可以单独启动：

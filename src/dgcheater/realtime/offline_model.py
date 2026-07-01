@@ -100,7 +100,7 @@ class RealtimeOfflineModel:
 
 def default_model_dir(repo_root: Path | None = None) -> Path:
     root = repo_root or Path.cwd()
-    return root / "output" / "realtime" / "models"
+    return root / "data" / "runtime-artifacts" / "output" / "realtime" / "models"
 
 
 def feature_vector(features: RealtimeFeatures, feature_names: list[str] | None = None) -> np.ndarray:

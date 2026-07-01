@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfdff"/>
+      <stop offset="1" stop-color="#f7f9f5"/>
+    </linearGradient>
+    <filter id="shadow" x="-12%" y="-18%" width="124%" height="136%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#203244" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:44px;font-weight:700;fill:#182432}
+      .claim{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:25px;fill:#314255}
+      .label{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:25px;font-weight:700;fill:#1f2e3d}
+      .auc{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:34px;font-weight:700;fill:#191970}
+      .body{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:22px;fill:#425365}
+      .small{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:19px;fill:#5a6b7b}
+    </style>
+  </defs>
+
+  <rect width="1500" height="780" fill="url(#bg)"/>
+  <text x="70" y="82" class="title">多数据集 AUC 汇总</text>
+  <text x="72" y="125" class="claim">四类公开数据口径共同验证识别链路的可迁移性与可信性</text>
+
+  <g transform="translate(92,190)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1316" height="108" rx="20" fill="#ffffff" stroke="#cbd7e3" stroke-width="2"/>
+    <text x="36" y="43" class="label">DGraph-Fin</text>
+    <text x="36" y="78" class="small">公开图交易基准</text>
+    <rect x="310" y="38" width="560" height="30" rx="15" fill="#e8eef6"/>
+    <rect x="310" y="38" width="464" height="30" rx="15" fill="#6f9bd7"/>
+    <text x="936" y="68" class="auc">0.828120</text>
+    <text x="1120" y="68" class="body">图结构与时间统计</text>
+
+    <rect x="0" y="128" width="1316" height="108" rx="20" fill="#ffffff" stroke="#cbd7e3" stroke-width="2"/>
+    <text x="36" y="171" class="label">DGraph-Fin2</text>
+    <text x="36" y="206" class="small">时间增强图数据</text>
+    <rect x="310" y="166" width="560" height="30" rx="15" fill="#e8eef6"/>
+    <rect x="310" y="166" width="464" height="30" rx="15" fill="#6bad80"/>
+    <text x="936" y="196" class="auc">0.827919</text>
+    <text x="1120" y="196" class="body">剔除泄漏字段</text>
+
+    <rect x="0" y="256" width="1316" height="108" rx="20" fill="#ffffff" stroke="#cbd7e3" stroke-width="2"/>
+    <text x="36" y="299" class="label">IEEE-CIS</text>
+    <text x="36" y="334" class="small">表格交易欺诈识别</text>
+    <rect x="310" y="294" width="560" height="30" rx="15" fill="#e8eef6"/>
+    <rect x="310" y="294" width="512" height="30" rx="15" fill="#e09a43"/>
+    <text x="936" y="324" class="auc">0.914582</text>
+    <text x="1120" y="324" class="body">按交易时间切分</text>
+
+    <rect x="0" y="384" width="1316" height="108" rx="20" fill="#ffffff" stroke="#cbd7e3" stroke-width="2"/>
+    <text x="36" y="427" class="label">Elliptic++</text>
+    <text x="36" y="462" class="small">反洗钱交易网络</text>
+    <rect x="310" y="422" width="560" height="30" rx="15" fill="#e8eef6"/>
+    <rect x="310" y="422" width="519" height="30" rx="15" fill="#b48cd8"/>
+    <text x="936" y="452" class="auc">0.926556</text>
+    <text x="1120" y="452" class="body">修正可信口径</text>
+  </g>
+
+  <rect x="118" y="710" width="1264" height="46" rx="16" fill="#fff1ef" stroke="#e5a098" stroke-width="1.5"/>
+  <text x="154" y="740" class="body">结论：结果覆盖图交易、时间增强图、表格交易和反洗钱网络，均采用可信验证口径，不保留明显泄漏带来的虚高分数。</text>
+</svg>

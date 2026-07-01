@@ -11,7 +11,7 @@
 - 多源特征融合：账户画像、设备登录挑战和黑名单状态已经进入实时特征，并参与风险评分和原因码输出。
 - 图状态服务内核：维护动态邻接表，输出一跳邻居、二跳组件、风险邻居数和团伙编号。
 - 图追溯证据：评分结果会携带图团伙编号和真实相关节点列表，风险事件入库时会同步写入关联边，用于大屏点击节点后的邻域追溯。
-- 融合评分器：将 DGraph-Fin 账户模型先验、实时行为、图团伙和规则命中融合为风险分、风险等级和处置动作。账户模型先验加载 `output/dgraph_fin/models` 下的 XGBoost 与 LightGBM 模型，并使用 DGraph-Fin 126 维图特征模型分作为交易两端账户风险先验；评分不使用仿真标签字段，`is_scripted_fraud` 只作为烟测评估真值保留。
+- 融合评分器：将 DGraph-Fin 账户模型先验、实时行为、图团伙和规则命中融合为风险分、风险等级和处置动作。账户模型先验默认加载 `data/runtime-artifacts/output/dgraph_fin/models` 下的 XGBoost 与 LightGBM 模型，并使用 DGraph-Fin 126 维图特征模型分作为交易两端账户风险先验；评分不使用仿真标签字段，`is_scripted_fraud` 只作为烟测评估真值保留。
 - Kafka 本地链路命令：支持仿真交易进入 `transactions.raw`，特征消费者写入 `features.realtime`，评分消费者写入 `risk.scored`、`risk.alerts` 和 `risk.audit`。
 - Kafka 多源汇合：特征消费者会按 `event_id` 汇合同批账户画像、设备登录、黑名单和交易事件，满足账户、设备、交易三类必要来源后再计算实时特征，避免跨主题乱序导致评分证据缺失。
 - 本地 JSON Schema：`packages/schema/` 下维护交易、账户画像、设备登录、黑名单、延迟标签、实时特征和风险判定的字段契约。
@@ -135,7 +135,7 @@ uv run dgcheater-realtime e2e-check --event-count 200 --timeout-sec 120
 
 ## 运行指标
 
-指标文件默认写入 `output/realtime/runtime-metrics.json`。字段含义：
+指标文件默认写入 `tmp/realtime/runtime-metrics.json`。字段含义：
 
 - `produced_events`：仿真生产器写入 Kafka 的事件数。
 - `feature_events`：特征消费者或 Flink 特征链路处理后的事件数。

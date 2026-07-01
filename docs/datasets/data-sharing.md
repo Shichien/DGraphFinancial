@@ -31,19 +31,19 @@
 - `data/runtime-artifacts/output/dgraph_fin/models/lightgbm_aux.joblib`
 - `data/runtime-artifacts/output/dgraph_fin/metrics/xgboost_metrics.json`
 
-程序仍然兼容原来的 `output/` 目录。如果 `output/` 下存在同名产物，会优先读取 `output/`；如果不存在，会自动读取 `data/runtime-artifacts/output`。因此新机器只要把完整 `data/` 目录挂载到项目根目录，就能让实时大屏加载账户风险先验。
+实时大屏直接读取 `data/runtime-artifacts/output` 下的运行产物。因此新机器只要把完整 `data/` 目录挂载到项目根目录，就能让实时大屏加载账户风险先验，不要求项目根目录存在 `output/`。
 
 当前已生成的演示包位置：
 
 ```text
-output/share/zhijian-liudun-demo-data-runtime.zip
+artifacts/share/zhijian-liudun-demo-data-runtime.zip
 ```
 
 解压时保持目录结构不变，直接覆盖到项目根目录即可。解压后，实时大屏可以使用内置仿真数据、DGraph 风险先验回放和 AMLSim 样例数据。IEEE-CIS 选项需要另行下载 Kaggle 数据后才可复现。
 
 ## 为什么不把大数据直接打进仓库
 
-`data` 和 `output` 目录默认是本地数据和生成结果目录，仓库通过 `.gitignore` 忽略它们。这样做有三个原因：
+`data` 目录默认是本地数据目录，大型生成结果放入 `artifacts` 或 `tmp`，仓库通过 `.gitignore` 忽略它们。这样做有三个原因：
 
 - DGraph-Fin 和 IEEE-CIS 单文件体积很大，不适合放进代码仓库。
 - 部分数据集需要登录或遵守平台协议，不能直接二次分发。
@@ -55,7 +55,7 @@ Google 云盘上传需要账号授权。本机当前没有可用的命令行上�
 
 ```powershell
 rclone config
-rclone copy output/share/zhijian-liudun-demo-data-runtime.zip gdrive:zhijian-liudun/
+rclone copy artifacts/share/zhijian-liudun-demo-data-runtime.zip gdrive:zhijian-liudun/
 ```
 
 其中 `gdrive:` 是你本机配置的 Google 云盘名称。配置完成后，再执行上传命令即可。

@@ -61,7 +61,7 @@ set channel=wallet_pay historical_risk=0.61 blacklist=none
 show defaults
 show history
 detail -1
-export output/realtime/manual-risk-results.json
+export tmp/realtime/manual-risk-results.json
 reset
 quit
 ```
@@ -90,7 +90,7 @@ amount=5000..120000
 ## 脚本模式
 
 ```bash
-uv run dgcheater-realtime risk-console --script docs/online-deployment/examples/risk-console-script.json --output output/realtime/manual-risk-results.json
+uv run dgcheater-realtime risk-console --script docs/online-deployment/examples/risk-console-script.json --output tmp/realtime/manual-risk-results.json
 ```
 
 脚本可以是 JSON:

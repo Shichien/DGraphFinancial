@@ -34,8 +34,6 @@ data/*
 data.zip
 output/*
 !output/.gitkeep
-artifacts/*
-!artifacts/README.md
 tmp/*
 !tmp/.gitkeep
 

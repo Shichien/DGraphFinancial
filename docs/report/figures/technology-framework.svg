@@ -58,29 +58,29 @@
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="260" y="342" width="240" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
-    <text x="288" y="376" class="node">Kafka</text>
-    <text x="288" y="404" class="body">raw、cleaned、features</text>
+    <rect x="320" y="342" width="240" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
+    <text x="348" y="376" class="node">Kafka</text>
+    <text x="348" y="404" class="body">raw、cleaned、features</text>
 
-    <rect x="570" y="342" width="280" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
-    <text x="598" y="376" class="node">Flink Keyed State</text>
-    <text x="598" y="404" class="body">窗口、设备、IP、商户状态</text>
+    <rect x="630" y="342" width="280" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
+    <text x="658" y="376" class="node">Flink Keyed State</text>
+    <text x="658" y="404" class="body">窗口、设备、IP、商户状态</text>
 
-    <rect x="920" y="342" width="260" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
-    <text x="948" y="376" class="node">XGBoost / LightGBM</text>
-    <text x="948" y="404" class="body">离线账户风险先验</text>
+    <rect x="980" y="342" width="260" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
+    <text x="1008" y="376" class="node">XGBoost / LightGBM</text>
+    <text x="1008" y="404" class="body">离线账户风险先验</text>
 
-    <rect x="1250" y="342" width="250" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
-    <text x="1278" y="376" class="node">风险评分服务</text>
-    <text x="1278" y="404" class="body">分数、等级、原因码</text>
+    <rect x="1310" y="342" width="250" height="88" rx="16" fill="#ffffff" stroke="#cfdbe6"/>
+    <text x="1338" y="376" class="node">风险评分服务</text>
+    <text x="1338" y="404" class="body">分数、等级、原因码</text>
 
-    <rect x="570" y="456" width="280" height="70" rx="16" fill="#f8fbff" stroke="#b9cce2"/>
-    <text x="598" y="487" class="node">动态图特征</text>
-    <text x="598" y="512" class="body">邻域、组件、团伙编号</text>
+    <rect x="630" y="456" width="280" height="70" rx="16" fill="#f8fbff" stroke="#b9cce2"/>
+    <text x="658" y="487" class="node">动态图特征</text>
+    <text x="658" y="512" class="body">邻域、组件、团伙编号</text>
 
-    <rect x="920" y="456" width="260" height="70" rx="16" fill="#f8fbff" stroke="#b9cce2"/>
-    <text x="948" y="487" class="node">规则证据</text>
-    <text x="948" y="512" class="body">金额、频次、名单、设备</text>
+    <rect x="980" y="456" width="260" height="70" rx="16" fill="#f8fbff" stroke="#b9cce2"/>
+    <text x="1008" y="487" class="node">规则证据</text>
+    <text x="1008" y="512" class="body">金额、频次、名单、设备</text>
   </g>
 
   <g filter="url(#shadow)">
@@ -117,14 +117,14 @@
 
   <path class="line" d="M850 221 C880 221 890 221 920 221"/>
   <path class="line" d="M1180 221 C1210 221 1220 221 1250 221"/>
-  <path class="line" d="M720 257 C720 300 405 292 390 335"/>
-  <path class="line" d="M500 386 C530 386 540 386 570 386"/>
-  <path class="line" d="M850 386 C880 386 890 386 920 386"/>
-  <path class="line" d="M1180 386 C1210 386 1220 386 1250 386"/>
-  <path class="line" d="M710 430 L710 456"/>
-  <path class="line" d="M1050 430 L1050 456"/>
-  <path class="dash" d="M710 526 C760 548 970 552 1108 592"/>
-  <path class="line" d="M1375 430 C1375 505 1325 538 1215 548 C970 570 650 548 420 590"/>
+  <path class="line" d="M720 257 C720 300 465 292 450 335"/>
+  <path class="line" d="M560 386 C590 386 600 386 630 386"/>
+  <path class="line" d="M910 386 C940 386 950 386 980 386"/>
+  <path class="line" d="M1240 386 C1270 386 1280 386 1310 386"/>
+  <path class="line" d="M770 430 L770 456"/>
+  <path class="line" d="M1110 430 L1110 456"/>
+  <path class="dash" d="M770 526 C820 548 1010 552 1108 592"/>
+  <path class="line" d="M1435 430 C1435 505 1325 538 1215 548 C970 570 650 548 420 590"/>
   <path class="line" d="M1435 678 C1435 734 1240 720 1238 762"/>
   <path class="line" d="M415 678 L450 762"/>
   <path class="line" d="M765 678 C765 725 836 718 838 762"/>

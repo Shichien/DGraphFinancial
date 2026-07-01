@@ -26,7 +26,7 @@ class RuntimeMetrics:
 
 class RuntimeMetricsStore:
     def __init__(self, path: Path | None = None) -> None:
-        self.path = path or Path("output/realtime/runtime-metrics.json")
+        self.path = path or Path("tmp/realtime/runtime-metrics.json")
 
     def load(self) -> RuntimeMetrics:
         if not self.path.exists():

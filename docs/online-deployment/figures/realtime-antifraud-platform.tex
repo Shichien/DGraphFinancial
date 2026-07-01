@@ -183,15 +183,21 @@
 
   \node[title,anchor=west] at (0,232) {实时反诈平台总体架构};
 
-  \node[panel={blue}{softblue},fit={(2,160) (65,211)},label={[tag={blue},anchor=west]above left:多源仿真层}] {};
-  \node[panel={purple}{softpurple},fit={(84,134) (140,211)},label={[tag={purple},anchor=west]above left:Kafka 主题}] {};
-  \node[panel={orange}{softorange},fit={(159,150) (217,209)},label={[tag={orange},anchor=west]above left:Flink 实时处理层}] {};
-  \node[panel={green}{softgreen},fit={(238,156) (316,207)},label={[tag={green},anchor=west]above left:评分与决策层}] {};
-  \node[panel={red}{softred},fit={(338,140) (405,207)},label={[tag={red},anchor=west]above left:风险输出主题}] {};
+  \node[panel={blue}{softblue},fit={(2,160) (65,211)}] {};
+  \node[panel={purple}{softpurple},fit={(84,134) (140,211)}] {};
+  \node[panel={orange}{softorange},fit={(159,150) (217,209)}] {};
+  \node[panel={green}{softgreen},fit={(238,156) (316,207)}] {};
+  \node[panel={red}{softred},fit={(338,140) (405,207)}] {};
 
-  \node[panel={gold}{softgold},fit={(2,68) (140,130)},label={[tag={gold},anchor=west]above left:图状态与关系存储}] {};
-  \node[panel={red}{softred},fit={(159,70) (227,130)},label={[tag={red},anchor=west]above left:审计事件库}] {};
-  \node[panel={teal}{softteal},fit={(248,70) (403,126)},label={[tag={teal},anchor=west]above left:Vue 3D 风险总控大屏}] {};
+  \node[panel={gold}{softgold},fit={(2,68) (140,130)}] {};
+  \node[panel={red}{softred},fit={(159,70) (227,130)}] {};
+  \node[panel={teal}{softteal},fit={(248,70) (403,126)}] {};
+
+  \node[tag={blue},anchor=west] at (2,216) {多源仿真层};
+  \node[tag={purple},anchor=west] at (84,216) {Kafka 主题};
+  \node[tag={orange},anchor=west] at (159,214) {Flink 实时处理层};
+  \node[tag={green},anchor=west] at (238,212) {评分与决策层};
+  \node[tag={red},anchor=west] at (338,212) {风险输出主题};
 
   \node[module={blue}{softblue}] (sim) at (34,190) {多源异构仿真器};
   \node[sourcechip={blue}{softblue}] at (12,207) {银行转账};
@@ -238,26 +244,14 @@
   \node[module={gold}{softgold}] (graphsvc) at (38,109) {graph-state-service\\动态邻接表};
   \node[db={gold}{softgold}] (redis) at (36,84) {Redis\\实时状态};
   \node[db={gold}{softgold}] (neo4j) at (97,84) {Neo4j\\异构关系图};
-  \node[note,text width=55mm] (graphapi) at (100,111) {
-    \texttt{/graph/node/features}\\
-    \texttt{/graph/node/neighbors}\\
-    \texttt{/graph/community}
-  };
 
   \node[db={red}{softred}] (postgres) at (193,108) {PostgreSQL\\risk\_events};
-  \node[note,text width=63mm] at (193,83) {
-    risk\_event\_reasons、risk\_event\_edges、risk\_audit\_logs、case\_actions
-  };
 
   \node[module={teal}{softteal}] (vue) at (326,110) {Vue 3D 风险大屏};
   \node[submodule={teal}{softteal}] (vgraph) at (270,85) {3D 动态图\\团伙高亮};
   \node[submodule={teal}{softteal}] (valert) at (326,85) {实时告警\\高危排行};
   \node[submodule={teal}{softteal}] (vops) at (382,85) {Kafka 吞吐\\Flink 延迟};
   \node[module={red}{softred}] (caseapi) at (326,58) {审计与处置接口};
-
-  \node[note,text width=150mm] at (210,39) {
-    稳定事件字段：\texttt{event\_id, timestamp, source\_channel, src\_account, dst\_account, amount, merchant\_id, device\_id, ip, geo, edge\_type, scenario\_id, is\_scripted\_fraud, fraud\_script\_type}
-  };
 
   \draw[flow={blue}] (sim.east) -- node[pos=0.42,labeltext,above] {持续原始事件} (raw1.west);
   \draw[flow={blue}] (sim.east) to[out=0,in=180] (raw2.west);
@@ -283,8 +277,8 @@
 
   \draw[sideflow={gold}] (flink.south west) -- ++(-24,-21) -- (146,128) -- (76,128) -- (76,118) -- (64,118) -- (64,109) -- (graphsvc.east);
   \node[flowlabel] at (111,128) {状态更新};
-  \draw[sideflow={gold}] (score.west) -- (222,190) -- (222,122) -- (132,122) -- (132,111) -- (graphapi.east);
-  \node[flowlabel] at (177,122) {图特征查询};
+  \draw[sideflow={gold}] (score.west) -- (222,190) -- (222,122) -- (82,122) -- (graphsvc.east);
+  \node[flowlabel] at (156,122) {图特征查询};
   \draw[flow={gold}] (graphsvc) -- (redis);
   \draw[flow={gold}] (graphsvc) -- (neo4j);
 

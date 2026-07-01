@@ -271,43 +271,64 @@
   )
 ]
 
-= 实时大屏
+= 前端控制台
 
-#slide(title: [实时大屏核心界面一])[
+#slide(title: [前端控制台承接实时研判流程])[
+  #grid(
+    columns: (1.35fr, 0.85fr),
+    gutter: 18pt,
+    [
+      #align(center)[#image("../report/figures/frontend/frontend-console-result-top.png", height: 248pt)]
+      #set text(size: 12pt, fill: slate)
+      左侧控制台页用于构造仿真交易流，运行后同步返回模型输出、原因码统计和处置建议。
+    ],
+    [
+      #insight-box(title: [控制台定位])[
+        控制台不承担模型计算，而是把可复现实验交易提交到实时评分链路，直接验证风险等级、原因码和单条解释。
+      ]
+      #v(0.65em)
+      #accent-box(title: [研判路径])[
+        控制台注入样本后进入告警筛选，再进入团伙图追溯，最后完成复核处置和审计留痕。
+      ]
+    ],
+  )
+]
+
+#slide(title: [控制台核心界面一])[
   #grid(
     columns: (1fr, 1fr),
     gutter: 14pt,
     [
-      #align(center)[#image("../../output/realtime/overview-redesign-live.png", width: 100%)]
+      #align(center)[#image("../report/figures/frontend/overview-redesign-live.png", width: 100%)]
       #set text(size: 12pt, fill: slate)
       实时交易监测与运行指标
     ],
     [
-      #align(center)[#image("../../output/realtime/alerts-management.png", width: 100%)]
+      #align(center)[#image("../report/figures/frontend/alerts-management.png", width: 100%)]
       #set text(size: 12pt, fill: slate)
       风险评分与告警队列
     ],
   )
 ]
 
-#slide(title: [实时大屏核心界面二])[
+#slide(title: [控制台核心界面二])[
   #grid(
     columns: (1fr, 1fr),
     gutter: 14pt,
     [
-      #align(center)[#image("../../output/realtime/graph-management.png", width: 100%)]
+      #align(center)[#image("../report/figures/frontend/graph-management.png", width: 100%)]
       #set text(size: 12pt, fill: slate)
       团伙关系图与节点追溯
     ],
     [
-      #align(center)[#image("../../output/realtime/review-management.png", width: 100%)]
+      #align(center)[#image("../report/figures/frontend/review-management.png", width: 100%)]
       #set text(size: 12pt, fill: slate)
       复核结果与审计留痕
     ],
   )
 ]
 
-#slide(title: [实时识别闭环])[
+#slide(title: [控制台把识别结果闭环到处置])[
   #grid(
     columns: (1fr, 1fr),
     gutter: 18pt,
@@ -381,28 +402,6 @@
   ]
 ]
 
-#slide(title: [系统能力与价值])[
-  #grid(
-    columns: (1fr, 1fr, 1fr),
-    gutter: 14pt,
-    [
-      #stat-card([DGraph-Fin], [0.828120], note: [图识别链路已成型], fill: paper)
-    ],
-    [
-      #stat-card([可信口径], [已完成复核], note: [Fin2、IEEE、Elliptic++ 均已校正口径], fill: paper)
-    ],
-    [
-      #stat-card([工程展示], [已形成闭环], note: [报告、面板、记录、脚本], fill: paper)
-    ],
-  )
-  #v(0.8em)
-  #insight-box(title: [系统价值])[
-    - 识别核心链路已经完成
-    - 公开基准成绩可信，没有依赖明显泄漏
-    - 实时识别工作台已经能演示仿真交易流识别、风险等级、处置和审计闭环
-  ]
-  #v(0.7em)
-  #set align(center + horizon)
-  #set text(fill: forest-main, weight: "semibold", size: 17pt)
-  面向方向一的实时金融反诈识别系统
+#slide(title: [多数据集 AUC 汇总])[
+  #align(center)[#image("assets/auc-summary.svg", height: 350pt)]
 ]
