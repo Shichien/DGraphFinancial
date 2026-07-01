@@ -20,9 +20,9 @@ const flinkLatency = computed(() => `${formatScore(props.streamMetrics.flinkLate
 <template>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">DG</div>
+      <div class="brand-mark">智</div>
       <div>
-        <strong>DGraph-Fin 动态交易图</strong>
+        <strong>智鉴流盾实时反诈平台</strong>
       </div>
       <button class="demo-button top-demo-button" type="button" @click="$emit('toggle-demo')">{{ demoRunning ? "停止" : "演示" }}</button>
     </div>
