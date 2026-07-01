@@ -11,6 +11,7 @@ import GlobalSearch from "./components/GlobalSearch.vue";
 import GraphPanel from "./components/GraphPanel.vue";
 import NodeRanking from "./components/NodeRanking.vue";
 import RiskSummary from "./components/RiskSummary.vue";
+import RiskConsolePanel from "./components/RiskConsolePanel.vue";
 import TopBar from "./components/TopBar.vue";
 import { useGraphStream } from "./composables/useGraphStream";
 import { communityLabel, fraudScriptLabel } from "./utils/format";
@@ -45,6 +46,7 @@ const pages = [
   { id: "alerts", label: "告警" },
   { id: "case", label: "案件" },
   { id: "graph", label: "图追溯" },
+  { id: "console", label: "控制台" },
   { id: "review", label: "复核" },
   { id: "ops", label: "运行" },
   { id: "architecture", label: "架构" },
@@ -447,6 +449,10 @@ onBeforeUnmount(() => {
             </section>
             <CaseDetailPanel :event="selectedCaseEvent" compact />
           </aside>
+        </div>
+
+        <div v-else-if="activePage === 'console'" class="page-content console-page">
+          <RiskConsolePanel />
         </div>
 
         <div v-else-if="activePage === 'review'" class="page-content review-page">

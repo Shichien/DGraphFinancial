@@ -84,3 +84,25 @@ export async function recordCaseAction({ eventId, status, reviewer = "reviewer",
   }
   return response.json();
 }
+
+export async function fetchRiskConsoleSchema() {
+  const response = await fetch("/api/risk-console/schema", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`风险控制台元数据请求失败: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function runRiskConsole(payload) {
+  const response = await fetch("/api/risk-console/run", {
+    method: "POST",
+    cache: "no-store",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const detail = await response.json().catch(() => ({}));
+    throw new Error(detail.detail || `风险控制台执行失败: ${response.status}`);
+  }
+  return response.json();
+}

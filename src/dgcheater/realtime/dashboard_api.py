@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from .data_sources import DATA_SOURCES, RealtimeDataSource, create_simulator, get_data_source
 from .feature_engine import RealtimeFeatureEngine
 from .graph_state import InMemoryGraphState
+from .manual_console import ALIASES, ManualRiskSession, aggregate_summary
 from .metrics import RuntimeMetricsStore, derive_dashboard_metrics
 from .realtime_sinks import RedisRiskSink
 from .schemas import RiskDecision
@@ -95,6 +96,7 @@ class DemoRuntime:
 
 
 runtime: DemoRuntime | None = None
+manual_runtime: ManualRiskSession | None = None
 
 
 def _runtime() -> DemoRuntime:
@@ -105,6 +107,13 @@ def _runtime() -> DemoRuntime:
         DGraphAccountPrior.load(repo_root=_REPO_ROOT)
         runtime = DemoRuntime()
     return runtime
+
+
+def _manual_runtime() -> ManualRiskSession:
+    global manual_runtime
+    if manual_runtime is None:
+        manual_runtime = ManualRiskSession()
+    return manual_runtime
 
 
 def serve(host: str = "127.0.0.1", port: int = 8060, reload: bool = False) -> None:
@@ -198,6 +207,41 @@ def switch_data_source(payload: dict[str, Any]) -> dict[str, Any]:
             "description": source.description,
             "mode": source.mode,
         },
+    }
+
+
+@app.get("/api/risk-console/schema")
+def risk_console_schema() -> dict[str, Any]:
+    session = _manual_runtime()
+    return {
+        "aliases": ALIASES,
+        "defaults": session.defaults,
+        "state": _risk_console_state(session),
+    }
+
+
+@app.post("/api/risk-console/run")
+def run_risk_console(payload: dict[str, Any]) -> dict[str, Any]:
+    session = _manual_runtime()
+    history_limit = int(payload.get("history_limit", 100))
+    history_limit = max(0, min(history_limit, 500))
+    try:
+        if bool(payload.get("reset_before", False)):
+            session.reset()
+        commands = _risk_console_commands(payload)
+        results: list[dict[str, Any]] = []
+        for command in commands:
+            results.extend(session.run_command(command))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    history = session.results[-history_limit:] if history_limit else []
+    return {
+        "ok": True,
+        "results": results,
+        "summary": aggregate_summary(results),
+        "history": history,
+        "historySummary": aggregate_summary(session.results),
+        "state": _risk_console_state(session),
     }
 
 
@@ -350,6 +394,26 @@ def _redis_sink() -> RedisRiskSink | None:
     if not redis_url:
         return None
     return RedisRiskSink(redis_url)
+
+
+def _risk_console_commands(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    reserved = {"reset_before", "history_limit"}
+    commands = payload.get("commands", payload.get("command"))
+    if commands is None:
+        commands = {key: value for key, value in payload.items() if key not in reserved}
+    if isinstance(commands, dict):
+        return [commands]
+    if isinstance(commands, list) and all(isinstance(item, dict) for item in commands):
+        return commands
+    raise ValueError("commands must be an object or an object list")
+
+
+def _risk_console_state(session: ManualRiskSession) -> dict[str, Any]:
+    return {
+        "next_event_id": session.next_event_id,
+        "next_timestamp": session.next_timestamp,
+        "result_count": len(session.results),
+    }
 
 
 def _snapshot_from_database(

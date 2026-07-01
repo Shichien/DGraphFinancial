@@ -6,13 +6,14 @@ import shutil
 import subprocess
 import importlib.util
 import sys
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import typer
 
 from .feature_engine import RealtimeFeatureEngine
 from .dashboard_api import DemoRuntime, _edges_from_events, _event_from_db, _snapshot_from_runtime
+from .data_sources import get_data_source
 from .kafka_runtime import (
     PendingMultiSourceEvent,
     _flush_ready_multisource_events,
@@ -24,6 +25,7 @@ from .e2e_check import run_e2e_check
 from .schema_validation import load_schema, validate_json_schema_sample
 from .scoring import SCORE_WEIGHTS, FusionRiskScorer
 from .simulator import MultiSourceFraudSimulator, SimulatorConfig
+from .manual_console import run_manual_console
 
 
 app = typer.Typer(no_args_is_help=True)
@@ -170,7 +172,9 @@ def graph_trace_smoke(event_count: int = 1_000, seed: int = 42, output_path: Pat
 @app.command("dashboard-contract-smoke")
 def dashboard_contract_smoke(event_count: int = 1_000, seed: int = 42, output_path: Path | None = None) -> None:
     """Verify dashboard payloads expose explanations, related nodes and trace edges."""
-    runtime = DemoRuntime(simulator=MultiSourceFraudSimulator(SimulatorConfig(seed=seed)))
+    source = get_data_source("simulator")
+    source = replace(source, seed=seed, simulator_config=replace(source.simulator_config, seed=seed))
+    runtime = DemoRuntime(source=source)
     runtime.advance(event_count)
     snapshot = _snapshot_from_runtime(runtime)
     events = snapshot["recentEvents"]
@@ -637,6 +641,16 @@ def topics() -> None:
         "labels.delayed",
     ]
     typer.echo("\n".join(names))
+
+
+@app.command("risk-console")
+def risk_console(
+    script_path: Path | None = typer.Option(None, "--script", "-s", help="JSON or JSONL command script."),
+    output_path: Path | None = typer.Option(None, "--output", "-o", help="Write scored results to JSON."),
+    print_full_json: bool = typer.Option(False, "--print-json", help="Print full results instead of summary in script mode."),
+) -> None:
+    """Run a configurable local transaction scoring console."""
+    run_manual_console(script_path=script_path, output_path=output_path, print_full_json=print_full_json)
 
 
 @app.command("submit-flink")
