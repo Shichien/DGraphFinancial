@@ -1,10 +1,10 @@
 #import "@preview/touying:0.6.1": *
 #import themes.stargazer: *
 
-#let forest-deep = rgb("#003300")
-#let forest-main = rgb("#1B5E20")
-#let forest-soft = rgb("#E8F5E9")
-#let amber = rgb("#FFD54F")
+#let forest-deep = rgb("#191970")
+#let forest-main = rgb("#4169E1")
+#let forest-soft = rgb("#F0F8FF")
+#let amber = rgb("#FF6347")
 #let slate = rgb("#263238")
 #let paper = rgb("#FAFAFA")
 

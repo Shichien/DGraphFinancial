@@ -1,9 +1,9 @@
 #import "@preview/showybox:2.0.4": showybox
 
-#let forest-deep = rgb("#003300")
-#let forest-main = rgb("#1B5E20")
-#let forest-soft = rgb("#E8F5E9")
-#let amber = rgb("#FFD54F")
+#let forest-deep = rgb("#191970")
+#let forest-main = rgb("#4169E1")
+#let forest-soft = rgb("#F0F8FF")
+#let amber = rgb("#FF6347")
 #let slate = rgb("#263238")
 #let paper = rgb("#FAFAFA")
 #let mist = rgb("#F6F6F6")
@@ -16,17 +16,17 @@
     stroke: 0.5pt + accent.lighten(42%),
     fill: fill,
   )[
-    #set text(fill: accent, weight: "bold", size: 12pt)
-    #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+    #set text(fill: accent, weight: "semibold", size: 12pt)
+    #set text(font: ("Libertinus Serif", "KaiTi"))
     #title
     #v(0.45em)
-    #set text(fill: forest-deep, weight: "bold", size: 24pt)
-    #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+    #set text(fill: forest-deep, weight: "semibold", size: 24pt)
+    #set text(font: ("Libertinus Serif", "KaiTi"))
     #value
     #if note != none [
       #v(0.35em)
       #set text(fill: slate.lighten(12%), size: 10pt)
-      #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+      #set text(font: ("Libertinus Serif", "KaiTi"))
       #note
     ]
   ]
@@ -40,7 +40,7 @@
     stroke: 0.6pt + stroke,
   )[
     #set text(fill: fg, size: 10pt, weight: "medium")
-    #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+    #set text(font: ("Libertinus Serif", "KaiTi"))
     #label
   ]
 }
@@ -59,12 +59,12 @@
       bottom: 8pt,
     )[
       #if title != "" [
-        #set text(font: ("Source Han Serif SC", "SimSun", "Times New Roman"), fill: primary, weight: "bold", size: 15pt)
+        #set text(font: ("STZhongsong", "KaiTi", "Libertinus Serif"), fill: primary, weight: "semibold", size: 15pt)
         #title
         #v(0.45em)
       ]
       #set text(fill: slate, size: 14pt)
-      #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+      #set text(font: ("Libertinus Serif", "KaiTi"))
       #body
     ]
   ]
@@ -75,5 +75,5 @@
 }
 
 #let accent-box(title: "", body) = {
-  note-box(title: title, body, primary: amber.darken(30%), fill: rgb("#FFFDE8"))
+  note-box(title: title, body, primary: amber.darken(15%), fill: amber.lighten(82%))
 }

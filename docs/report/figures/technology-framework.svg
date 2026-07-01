@@ -16,7 +16,6 @@
     </marker>
     <style>
       .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:39px;font-weight:700;fill:#182432}
-      .sub{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:20px;fill:#637184}
       .lane{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:24px;font-weight:700;fill:#1f2e3d}
       .node{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:20px;font-weight:700;fill:#223244}
       .body{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:16px;fill:#4a5b6a}
@@ -28,7 +27,6 @@
 
   <rect width="1700" height="980" fill="url(#bg)"/>
   <text x="84" y="76" class="title">智鉴流盾技术框架与组件选型</text>
-  <text x="86" y="112" class="sub">simulation · message stream · stateful computing · risk scoring · graph storage · visual review</text>
 
   <g filter="url(#shadow)">
     <rect x="70" y="155" width="1560" height="735" rx="30" fill="url(#panel)" stroke="#d9dfdf" stroke-width="2"/>
@@ -132,8 +130,4 @@
   <path class="line" d="M765 678 C765 725 836 718 838 762"/>
   <path class="line" d="M1110 678 C1110 725 1230 718 1232 762"/>
 
-  <g>
-    <rect x="86" y="916" width="1528" height="38" rx="14" fill="#ffffff" stroke="#d7dedc"/>
-    <text x="850" y="941" text-anchor="middle" class="chip">技术选型原则：流处理承接实时性，树模型保证稳定推理，图数据库支撑团伙溯源，前端大屏服务人工研判与复核闭环。</text>
-  </g>
 </svg>

@@ -43,7 +43,6 @@
 \tikzset{
   font=\normalsize,
   title/.style={font=\fontsize{22pt}{25pt}\selectfont\bfseries,text=ink,align=left},
-  subtitle/.style={font=\fontsize{10.8pt}{12pt}\selectfont,text=muted,align=left},
   panel/.style n args={2}{
     rounded corners=9pt,
     draw=#1!38,
@@ -183,7 +182,6 @@
   }
 
   \node[title,anchor=west] at (0,232) {实时反诈平台总体架构};
-  \node[subtitle,anchor=west] at (0,224) {多源仿真、欺诈剧本注入、Kafka 多主题、Flink Keyed State、图状态服务、模型评分、风险入库、3D 大屏与审计回流};
 
   \node[panel={blue}{softblue},fit={(2,160) (65,211)},label={[tag={blue},anchor=west]above left:多源仿真层}] {};
   \node[panel={purple}{softpurple},fit={(84,134) (140,211)},label={[tag={purple},anchor=west]above left:Kafka 主题}] {};
@@ -303,8 +301,6 @@
   \draw[feedback] (caseapi.west) -- ++(-55,0) |- (postgres.east);
   \node[flowlabel] at (224,104) {复核动作与审计};
 
-  \draw[decorate,decoration={brace,amplitude=4.2pt},draw=muted,line width=0.65pt]
-    (0,24) -- node[below=5pt,text=muted,font=\fontsize{8.6pt}{9.6pt}\selectfont] {完整闭环：事件持续产生 $\rightarrow$ 实时计算 $\rightarrow$ 模型评分 $\rightarrow$ 告警入库 $\rightarrow$ 大屏追溯 $\rightarrow$ 审计回流} (407,24);
 \end{tikzpicture}
 \end{document}
 

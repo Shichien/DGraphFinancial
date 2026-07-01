@@ -12,7 +12,6 @@
     </marker>
     <style>
       .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:34px;font-weight:700;fill:#182534}
-      .sub{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:19px;fill:#637282}
       .card{fill:#fff;stroke:#dce5ee;stroke-width:2}
       .h{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:22px;font-weight:700;fill:#1f2e3d}
       .t{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:17px;fill:#3d4f61}
@@ -24,7 +23,6 @@
   </defs>
   <rect width="1600" height="960" fill="url(#bg)"/>
   <text x="82" y="76" class="title">多维特征融合与风险评分机制</text>
-  <text x="84" y="112" class="sub">offline graph prior + online behavior + dynamic community + rule evidence</text>
 
   <g filter="url(#shadow)">
     <rect x="70" y="170" width="320" height="145" rx="18" class="card"/>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="520" viewBox="0 0 1280 520">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfdff"/>
+      <stop offset="1" stop-color="#f6f8f4"/>
+    </linearGradient>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#203244" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:36px;font-weight:700;fill:#162331}
+      .h{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:24px;font-weight:700;fill:#172331}
+      .b{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:17px;fill:#526476}
+    </style>
+  </defs>
+  <rect width="1280" height="520" fill="url(#bg)"/>
+  <text x="58" y="64" class="title">性能测试方案与观测指标</text>
+
+  <g filter="url(#shadow)">
+    <rect x="86" y="150" width="330" height="250" rx="22" fill="#e7f1ff" stroke="#8bb9eb" stroke-width="2"/>
+    <text x="128" y="202" class="h">模型推理层</text>
+    <text x="128" y="248" class="b">单笔评分耗时</text>
+    <text x="128" y="280" class="b">P95 / P99 延迟</text>
+    <text x="128" y="312" class="b">规则、模型、图分量耗时</text>
+    <text x="128" y="344" class="b">异常评分回退检查</text>
+
+    <rect x="475" y="150" width="330" height="250" rx="22" fill="#fff0e5" stroke="#e0a76b" stroke-width="2"/>
+    <text x="517" y="202" class="h">流处理层</text>
+    <text x="517" y="248" class="b">Kafka 写入吞吐</text>
+    <text x="517" y="280" class="b">Flink 输出吞吐</text>
+    <text x="517" y="312" class="b">checkpoint 耗时与积压</text>
+    <text x="517" y="344" class="b">突发流量稳定性</text>
+
+    <rect x="864" y="150" width="330" height="250" rx="22" fill="#e8f7f3" stroke="#7ac0b0" stroke-width="2"/>
+    <text x="906" y="202" class="h">业务闭环层</text>
+    <text x="906" y="248" class="b">风险事件入库耗时</text>
+    <text x="906" y="280" class="b">Redis 榜单刷新</text>
+    <text x="906" y="312" class="b">Neo4j 关系写入</text>
+    <text x="906" y="344" class="b">大屏 API 响应时间</text>
+  </g>
+
+  <rect x="172" y="430" width="936" height="48" rx="18" fill="#ffffff" stroke="#ccd7e1" stroke-width="2"/>
+  <text x="252" y="461" class="b">测试流量：正常交易、单点异常、团伙异常、突发交易；输出指标：平均值、P95、P99、积压、失败率、告警率、误报放行率。</text>
+</svg>

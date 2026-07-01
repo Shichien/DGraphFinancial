@@ -1,4 +1,5 @@
 #import "template/preamble.typ": template
+#import "@preview/subpar:0.2.2": grid as subfigure
 
 #show: template.with(
   header: [智鉴流盾金融反诈智能守护技术报告],
@@ -8,9 +9,6 @@
 
 #align(center)[
   #text(size: 18pt, weight: "bold")[智鉴流盾金融反诈智能守护技术报告]
-
-  #v(0.8em)
-  #text(size: 11pt)[方向一：欺诈交易智能识别]
 ]
 
 #outline(title: [ #h(-0.5em) 目录])
@@ -159,14 +157,9 @@
 
 在线评分器直接加载 DGraph-Fin 训练得到的 XGBoost 与 LightGBM 模型，将源账户和目标账户映射到 DGraph 节点空间，分别计算 126 维图特征模型先验，并取两端账户较高分作为交易账户风险先验。在此基础上，再引入实时行为分、图团伙分和规则分，综合风险分为：
 
-```text
-风险分 = 0.45 * DGraph-Fin 账户模型先验
-      + 0.30 * 实时行为风险
-      + 0.15 * 图团伙风险
-      + 0.10 * 规则命中风险
-```
+$ S = 0.45 P_"DGraph" + 0.30 P_"behavior" + 0.15 P_"community" + 0.10 P_"rule" $
 
-该权重用于保证前端解释面板和后端评分逻辑使用同一套口径。证据字段中会保留 DGraph 源账户分、目标账户分、节点映射、模型特征维度和 DGraph 验证 AUC，用于证明大屏中的模型先验来自 DGraph-Fin 公开图模型，而不是规则分伪装。
+其中 $P_"DGraph"$ 表示 DGraph-Fin 账户模型先验，$P_"behavior"$ 表示实时行为风险，$P_"community"$ 表示图团伙风险，$P_"rule"$ 表示规则命中风险。该权重用于保证前端解释面板和后端评分逻辑使用同一套口径。证据字段中会保留 DGraph 源账户分、目标账户分、节点映射、模型特征维度和 DGraph 验证 AUC，用于证明大屏中的模型先验来自 DGraph-Fin 公开图模型，而不是规则分伪装。
 
 == 泄漏控制
 
@@ -225,6 +218,11 @@
 
 系统将新增仿真欺诈样本、延迟标签和人工复核结果作为模型迭代入口。`labels.delayed` 模拟金融业务中交易发生后才确认欺诈的情况，`case_actions` 记录人工确认欺诈、人工冻结或误报放行等复核结果，`risk_audit_logs` 保留每次风险判定和处置轨迹。
 
+#figure(
+  image("figures/online-learning-loop.svg", width: 100%),
+  caption: [自适应学习与模型迭代闭环：延迟标签和人工复核结果回流到训练、影子评估、版本切换和回滚过程。],
+) <online-learning-loop>
+
 模型迭代采用闭环学习流程。实时链路持续产生风险事件、原因码和证据字段，延迟标签与人工复核结果随后回流为带时间戳的训练样本；离线训练阶段按时间切分重新生成特征，避免未来信息泄漏；新模型先以影子评估方式与当前模型并行比较召回率、误报率、稳定性和评分延迟，达到阈值后再切换版本，若告警率、误报率或延迟异常，则回滚到上一稳定版本。
 
 系统在数据结构上贯通离线再训练入口、模型产物版本、特征重要度、延迟标签、复核结果和审计记录，使新增仿真欺诈样本能够沿同一条链路进入再训练、评估、版本切换和审计过程。
@@ -235,6 +233,11 @@
 
 动态图状态服务输出一跳邻居、二跳组件、风险邻居数、团伙编号和相关节点列表。一跳邻居表达当前账户直接发生交易或共享设备、IP、商户的关联实体；二跳组件进一步扩展局部团伙结构；风险邻居数衡量邻域内已被判定为高危或严重风险的节点数量；团伙编号根据连通分量或社区结构生成，并随相关节点列表写入风险事件，供人工复核时追溯具体对象。
 
+#figure(
+  image("figures/graph-tracing-explainability.svg", width: 100%),
+  caption: [图分析溯源与可解释输出：账户、设备、IP、商户和相关账户共同构成异构团伙证据。],
+) <graph-tracing>
+
 这些图特征在识别中的作用不是单纯展示关系，而是直接参与评分。评分公式中的图团伙风险来自邻居数量、风险邻居数、组件规模、历史高风险先验和脚本命中程度。高危风险事件会把相关边写入 PostgreSQL 的风险关联边表，并可同步写入 Neo4j 的异构图谱，前端点击节点后可以追溯交易边、设备边、IP 边和商户边。
 
 图分析带来的可解释性体现在三处：第一，风险分解释面板展示图团伙风险贡献；第二，告警事件保留 community_id 和 related_nodes；第三，审计和复核链路可以查看该事件为何与其他账户、设备或商户关联。这样人工研判人员不仅能看到模型判为高危，还能看到形成该判断的链路证据。
@@ -243,17 +246,18 @@
 
 大屏采用 Vue 组件化实现，围绕实时交易监测、风险评分、告警队列、团伙关系图和复核结果五个核心视图组织。其作用不是重复呈现技术方案，而是集中呈现交易流进入、风险等级变化、告警入队、节点关系追溯和审计留痕。
 
-#figure(
-  grid(
-    columns: (1fr, 1fr),
-    gutter: 1em,
-    figure(image("../../output/realtime/overview-redesign-live.png", width: 100%), caption: [实时交易监测与运行指标]),
-    figure(image("../../output/realtime/alerts-management.png", width: 100%), caption: [风险评分与告警队列]),
-    figure(image("../../output/realtime/graph-management.png", width: 100%), caption: [团伙关系图与节点追溯]),
-    figure(image("../../output/realtime/review-management.png", width: 100%), caption: [复核结果与审计留痕]),
-  ),
+#subfigure(
+  columns: (1fr, 1fr),
+  gutter: 1em,
+  numbering-sub: (super, sub) => [图 #super#[-]#sub],
+  numbering-sub-ref: (super, sub) => [图 #super#[-]#sub],
+  figure(image("../../output/realtime/overview-redesign-live.png", width: 100%), caption: [实时交易监测与运行指标]),
+  figure(image("../../output/realtime/alerts-management.png", width: 100%), caption: [风险评分与告警队列]),
+  figure(image("../../output/realtime/graph-management.png", width: 100%), caption: [团伙关系图与节点追溯]),
+  figure(image("../../output/realtime/review-management.png", width: 100%), caption: [复核结果与审计留痕]),
   caption: [实时大屏核心页面：保留交易监测、风险评分、告警队列、团伙关系图和复核结果五类核心能力。],
-) <dashboard-screens>
+  label: <dashboard-screens>,
+)
 
 = 模型评估与性能测试方案
 
@@ -280,6 +284,11 @@ DGraph-Fin 当前训练集规模为 937584，验证集规模为 104177，训练�
 == 性能测试方案
 
 性能测试从模型推理、流处理和业务闭环三层展开。模型推理层统计单笔特征输入后的评分耗时、P95 和 P99 延迟，用于验证模型服务是否满足在线判定要求；流处理层统计 Kafka 写入吞吐、Flink 特征输出吞吐、Flink 估计延迟、checkpoint 耗时和消息积压，用于验证高并发交易流下是否能稳定产出 `features.realtime`；业务闭环层统计风险事件入库耗时、Redis 榜单刷新耗时、Neo4j 关系写入耗时和大屏 API 响应时间，用于验证告警、图谱和复核状态是否来自真实链路。
+
+#figure(
+  image("figures/performance-test-plan.svg", width: 100%),
+  caption: [性能测试方案与观测指标：从模型推理、流处理到业务闭环分层评估系统实时性和稳定性。],
+) <performance-plan>
 
 测试数据按正常交易、单点异常、团伙异常和突发流量四类构造。正常交易用于观察误报率和系统基线延迟；单点异常用于验证金额、频次、设备、IP、黑名单等规则证据是否能被捕获；团伙异常用于验证图邻域、连通分量、共享设备和共享商户等关系证据；突发流量用于验证 Kafka、Flink、评分服务和数据库写入在高并发条件下的稳定性。
 

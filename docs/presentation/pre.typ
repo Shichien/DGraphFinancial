@@ -6,17 +6,18 @@
 #show: deck-theme((
   title: [智鉴流盾],
   subtitle: [面向仿真交易流的实时金融反诈识别与动态图溯源系统],
-  author: [参赛团队],
+  author: [方向一 #h(0.5em) 欺诈交易智能识别],
   date: [2026-06-03],
-  institution: [方向一 欺诈交易智能识别],
+  institution: [],
 ))
 
 #set page(fill: paper)
-#set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"), fill: slate)
+#set text(font: ("Libertinus Serif", "KaiTi"), fill: slate)
 #set heading(numbering: numbly("{1}.", default: "1.1"))
-#show heading: set text(font: ("Source Han Serif SC", "SimSun", "Times New Roman"), weight: "bold")
-#show strong: set text(font: ("Source Han Serif SC", "SimSun", "Times New Roman"), weight: "bold")
+#show heading: set text(font: ("STZhongsong", "KaiTi", "Libertinus Serif"), weight: "semibold")
+#show strong: set text(font: ("STZhongsong", "KaiTi", "Libertinus Serif"), weight: "semibold")
 #show figure.caption: set text(size: 14pt)
+#set list(marker: move(dy: -0.02em, circle(radius: 2.05pt, fill: forest-main)), indent: 0.9em, body-indent: 0.95em)
 
 #let full-figure(path) = {
   v(-0.15em)
@@ -24,6 +25,8 @@
 }
 
 #title-slide()
+
+= 项目定位
 
 #slide(title: [作品信息])[
   #grid(
@@ -84,11 +87,11 @@
           #stat-card([DGraph-Fin AUC], [0.828120], note: [公开图基准验证])
         ],
         [
-          #stat-card([已接入数据集], [5+], note: [DGraph-Fin、Fin2、IEEE-CIS、Elliptic++、AMLSim], fill: rgb("#eef7f0"))
+          #stat-card([已接入数据集], [5+], note: [DGraph-Fin、Fin2、IEEE-CIS、Elliptic++、AMLSim], fill: forest-soft)
         ],
         [
           #grid.cell(colspan: 2)[
-            #stat-card([交付形态], [模型 + 报告 + 面板], note: [CLI、Typst、Dashboard], fill: rgb("#fffaf0"), accent: amber.darken(25%))
+            #stat-card([交付形态], [模型 + 报告 + 面板], note: [CLI、Typst、Dashboard], fill: amber.lighten(82%), accent: amber.darken(15%))
           ]
         ],
       )
@@ -125,7 +128,7 @@
     fill: forest-soft,
     stroke: 0.6pt + forest-main.lighten(35%),
   )[
-    #set text(fill: forest-deep, weight: "bold", size: 14pt)
+    #set text(fill: forest-deep, weight: "semibold", size: 14pt)
     方案核心是围绕欺诈交易识别形成可复现、可解释、可扩展的主链路。
   ]
 ]
@@ -156,6 +159,8 @@
   ]
 ]
 
+= 系统架构
+
 #slide(title: [实时反诈平台图形摘要])[
   #full-figure("../report/figures/sci-graphical-abstract.svg")
 ]
@@ -180,29 +185,30 @@
   #full-figure("../report/figures/hybrid-cloud-security.svg")
 ]
 
+= 模型评估
+
 #slide(title: [多数据集表现良好])[
   #grid(
     columns: (1fr, 1fr, 1fr, 1fr),
     gutter: 12pt,
     [
-      #stat-card([DGraph-Fin], [0.828120], note: [公开图基准], fill: rgb("#f5f8f6"))
+      #stat-card([DGraph-Fin], [0.828120], note: [公开图基准], fill: paper)
     ],
     [
-      #stat-card([DGraph-Fin2], [0.827919], note: [移除节点时间标签], fill: rgb("#eef7f0"))
+      #stat-card([DGraph-Fin2], [0.827919], note: [移除节点时间标签], fill: forest-soft)
     ],
     [
-      #stat-card([IEEE-CIS], [0.914582], note: [时间切分验证], fill: rgb("#fff8e8"), accent: amber.darken(25%))
+      #stat-card([IEEE-CIS], [0.914582], note: [时间切分验证], fill: amber.lighten(82%), accent: amber.darken(15%))
     ],
     [
-      #stat-card([Elliptic++], [0.926556], note: [严格复核口径], fill: rgb("#f5f8f6"))
+      #stat-card([Elliptic++], [0.926556], note: [严格复核口径], fill: paper)
     ],
     [
       #grid.cell(colspan: 3)[
         #insight-box(title: [结果含义])[
           #set text(size: 12.5pt)
           - 覆盖图交易、时间增强图、表格交易和反洗钱图等多种数据形态
-          - 多个公开数据集的 AUC 均处于良好水平，说明算法不是只适配单一数据集
-          - 不直接使用存在泄漏风险的字段，统一输出指标、提交文件和特征重要度
+          - 多个公开数据集的 AUC 均处于良好水平，且不直接使用存在泄漏风险的字段
         ]
       ]
     ],
@@ -264,6 +270,8 @@
     ],
   )
 ]
+
+= 实时大屏
 
 #slide(title: [实时大屏核心界面一])[
   #grid(
@@ -332,6 +340,8 @@
   )
 ]
 
+= 工程交付
+
 #slide(title: [工程化与落地路线])[
   #grid(
     columns: (1fr, 1fr),
@@ -393,7 +403,7 @@
   ]
   #v(0.7em)
   #set align(center + horizon)
-  #set text(fill: forest-main, weight: "bold", size: 17pt)
+  #set text(fill: forest-main, weight: "semibold", size: 17pt)
   面向方向一的实时金融反诈识别系统
 ]
 

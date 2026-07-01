@@ -31,7 +31,6 @@
     </marker>
     <style>
       .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:34px;font-weight:700;fill:#17212b}
-      .subtitle{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:20px;fill:#5f6b78}
       .lane{fill:#ffffff;stroke:#dbe3ea;stroke-width:2}
       .lane-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:24px;font-weight:700;fill:#263544}
       .node-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:21px;font-weight:700;fill:#1f2d3a}
@@ -44,7 +43,6 @@
   </defs>
   <rect width="1600" height="900" fill="url(#bg)"/>
   <text x="80" y="72" class="title">智鉴流盾实时金融反诈平台图形摘要</text>
-  <text x="82" y="108" class="subtitle">continuous transaction stream · stateful features · explainable risk decision · graph tracing · audit loop</text>
 
   <rect x="62" y="150" width="1450" height="600" rx="28" class="lane" filter="url(#shadow)"/>
   <line x1="430" y1="150" x2="430" y2="750" stroke="#e3e9ef" stroke-width="2"/>
@@ -130,9 +128,6 @@
   <path class="pipe" d="M1110 620 C1160 620 1175 620 1225 620"/>
 
   <path class="return" d="M1350 675 C1315 775 430 805 260 715 C232 700 214 684 202 664"/>
-  <rect x="335" y="802" width="930" height="38" rx="15" fill="#ffffff" stroke="#d7e1e8" stroke-width="1.5" opacity="0.94"/>
-  <text x="800" y="827" text-anchor="middle" class="caption">复核结论与延迟标签回流，驱动样本沉淀、阈值校准、离线再训练和模型版本迭代</text>
-
   <g>
     <circle cx="410" cy="868" r="8" fill="#3f7fbd"/>
     <text x="428" y="875" class="small">蓝色：数据输入</text>

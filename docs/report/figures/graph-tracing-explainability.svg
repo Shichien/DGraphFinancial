@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fcfdff"/>
+      <stop offset="1" stop-color="#f4f8f6"/>
+    </linearGradient>
+    <filter id="shadow" x="-14%" y="-14%" width="128%" height="128%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#203244" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#31465b"/>
+    </marker>
+    <style>
+      .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:36px;font-weight:700;fill:#162331}
+      .label{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:20px;font-weight:700;fill:#172331}
+      .small{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:16px;fill:#556678}
+      .edge{fill:none;stroke:#8090a0;stroke-width:3}
+      .risk{fill:none;stroke:#d05c5c;stroke-width:4}
+      .flow{fill:none;stroke:#31465b;stroke-width:4;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1280" height="560" fill="url(#bg)"/>
+  <text x="58" y="64" class="title">图分析溯源与可解释输出</text>
+
+  <g transform="translate(80,140)">
+    <path class="edge" d="M170 110 L300 55"/>
+    <path class="edge" d="M170 110 L300 170"/>
+    <path class="risk" d="M300 55 L435 110"/>
+    <path class="edge" d="M300 170 L435 110"/>
+    <path class="risk" d="M435 110 L560 72"/>
+    <path class="edge" d="M435 110 L560 180"/>
+    <circle cx="170" cy="110" r="44" fill="#fdecec" stroke="#d05c5c" stroke-width="4"/>
+    <circle cx="300" cy="55" r="34" fill="#fff5df" stroke="#d7ad62" stroke-width="3"/>
+    <circle cx="300" cy="170" r="34" fill="#e7f1ff" stroke="#8bb9eb" stroke-width="3"/>
+    <circle cx="435" cy="110" r="38" fill="#e8f7f3" stroke="#7ac0b0" stroke-width="3"/>
+    <circle cx="560" cy="72" r="34" fill="#f1edfb" stroke="#ad99df" stroke-width="3"/>
+    <circle cx="560" cy="180" r="34" fill="#ffffff" stroke="#aeb9c3" stroke-width="3"/>
+    <text x="145" y="116" class="label">风险账户</text>
+    <text x="278" y="61" class="small">设备</text>
+    <text x="284" y="176" class="small">IP</text>
+    <text x="416" y="116" class="small">商户</text>
+    <text x="542" y="78" class="small">账户</text>
+    <text x="542" y="186" class="small">账户</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="790" y="152" width="400" height="82" rx="18" fill="#ffffff" stroke="#ccd7e1" stroke-width="2"/>
+    <text x="824" y="188" class="label">邻域证据</text>
+    <text x="824" y="216" class="small">一跳邻居、二跳组件、风险邻居数</text>
+
+    <rect x="790" y="258" width="400" height="82" rx="18" fill="#ffffff" stroke="#ccd7e1" stroke-width="2"/>
+    <text x="824" y="294" class="label">团伙风险</text>
+    <text x="824" y="322" class="small">community_id、组件规模、共享实体</text>
+
+    <rect x="790" y="364" width="400" height="82" rx="18" fill="#ffffff" stroke="#ccd7e1" stroke-width="2"/>
+    <text x="824" y="400" class="label">人工研判</text>
+    <text x="824" y="428" class="small">原因码、相关节点、风险关联边</text>
+  </g>
+  <path class="flow" d="M680 250 L790 196"/>
+  <path class="flow" d="M680 250 L790 300"/>
+  <path class="flow" d="M680 250 L790 406"/>
+</svg>
