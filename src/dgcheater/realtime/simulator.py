@@ -22,6 +22,11 @@ FRAUD_TYPES = (
 )
 SEGMENTS = ("retail", "small_business", "merchant_operator", "cross_border", "new_account")
 ACTIVE_FRAUD_GROUP_COUNT = 12
+DEMO_ACCOUNT_COUNT = 720
+DEMO_MERCHANT_COUNT = 96
+DEMO_DEVICE_COUNT = 320
+DEMO_EVENT_COUNT = 400
+DEMO_REPLAY_EVENT_COUNT = 400
 
 
 class MultiSourceEventBatch(NamedTuple):
@@ -41,6 +46,24 @@ class SimulatorConfig:
     seed: int = 42
     event_id_start: int = 0
     timestamp_start: int = 0
+
+
+def demo_simulator_config(
+    *,
+    seed: int = 42,
+    fraud_ratio: float = 0.26,
+    event_id_start: int = 0,
+    timestamp_start: int = 0,
+) -> SimulatorConfig:
+    return SimulatorConfig(
+        account_count=DEMO_ACCOUNT_COUNT,
+        merchant_count=DEMO_MERCHANT_COUNT,
+        device_count=DEMO_DEVICE_COUNT,
+        fraud_ratio=fraud_ratio,
+        seed=seed,
+        event_id_start=event_id_start,
+        timestamp_start=timestamp_start,
+    )
 
 
 class MultiSourceFraudSimulator:

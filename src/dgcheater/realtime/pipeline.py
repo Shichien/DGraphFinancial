@@ -24,7 +24,7 @@ from .kafka_runtime import (
 from .e2e_check import run_e2e_check
 from .schema_validation import load_schema, validate_json_schema_sample
 from .scoring import SCORE_WEIGHTS, FusionRiskScorer
-from .simulator import MultiSourceFraudSimulator, SimulatorConfig
+from .simulator import DEMO_EVENT_COUNT, MultiSourceFraudSimulator, SimulatorConfig
 from .manual_console import run_manual_console
 
 
@@ -679,7 +679,7 @@ def submit_flink() -> None:
 
 @app.command("produce")
 def produce(
-    event_count: int = 10_000,
+    event_count: int = DEMO_EVENT_COUNT,
     interval_ms: int = 100,
     seed: int = 42,
     event_id_start: int = 0,

@@ -152,7 +152,6 @@ const aliasRows = computed(() => Object.entries(schema.value?.aliases || {}).sli
 const reasonRows = computed(() => Object.entries(summary.value.reason_counts || {}).slice(0, 10));
 const topRows = computed(() => summary.value.top_events || []);
 const scoreRows = computed(() => selectedResult.value?.score_breakdown || []);
-const maxContribution = computed(() => Math.max(0.001, ...scoreRows.value.map((row) => Math.abs(Number(row.contribution || 0)))));
 const featureRows = computed(() =>
   Object.entries(selectedFeatures.value)
     .filter(([, value]) => value !== null && value !== undefined)
@@ -281,10 +280,6 @@ function displayValue(value) {
   if (typeof value === "boolean") return value ? "true" : "false";
   if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(4);
   return value === null || value === undefined || value === "" ? "--" : String(value);
-}
-
-function contributionWidth(row) {
-  return `${Math.min(100, Math.abs(Number(row.contribution || 0)) / maxContribution.value * 100)}%`;
 }
 
 async function loadSchema() {
@@ -454,79 +449,78 @@ onMounted(loadSchema);
       </section>
 
       <section class="panel risk-console-detail">
-      <div class="panel-head">
-        <h2>单条解释</h2>
-        <span v-if="selectedResult">Event {{ selectedSummary.event_id }}</span>
-        <span v-else>等待选择</span>
-      </div>
-
-      <template v-if="selectedResult">
-        <div class="console-decision-card" :style="{ '--level-color': levelColor[selectedDecision.risk_level] || '#1f7a62' }">
-          <div>
-            <span>风险等级</span>
-            <strong>{{ riskLabel(selectedDecision.risk_level) }}</strong>
-          </div>
-          <div>
-            <span>模型分数</span>
-            <strong>{{ formatScore(selectedDecision.risk_score) }}</strong>
-          </div>
-          <div>
-            <span>处置建议</span>
-            <strong>{{ actionLabel(selectedDecision.decision) }}</strong>
-          </div>
-          <div>
-            <span>剧本类型</span>
-            <strong>{{ fraudScriptLabel(selectedFeatures.fraud_script_type) }}</strong>
-          </div>
+        <div class="panel-head">
+          <h2>单条解释</h2>
+          <span v-if="selectedResult">Event {{ selectedSummary.event_id }}</span>
+          <span v-else>等待选择</span>
         </div>
 
-        <div class="console-kv-grid">
-          <span>
-            <b>源账户</b>
-            {{ selectedInput.src_account }}
-          </span>
-          <span>
-            <b>目标账户</b>
-            {{ selectedInput.dst_account }}
-          </span>
-          <span>
-            <b>设备</b>
-            {{ selectedInput.device_id }}
-          </span>
-          <span>
-            <b>IP</b>
-            {{ selectedInput.ip }}
-          </span>
-          <span>
-            <b>商户</b>
-            {{ selectedInput.merchant_id }}
-          </span>
-          <span>
-            <b>团伙</b>
-            {{ selectedDecision.community_id || "--" }}
-          </span>
-        </div>
+        <template v-if="selectedResult">
+          <dl class="console-simple-list">
+            <div>
+              <dt>风险等级</dt>
+              <dd>{{ riskLabel(selectedDecision.risk_level) }}</dd>
+            </div>
+            <div>
+              <dt>模型分数</dt>
+              <dd>{{ formatScore(selectedDecision.risk_score) }}</dd>
+            </div>
+            <div>
+              <dt>处置建议</dt>
+              <dd>{{ actionLabel(selectedDecision.decision) }}</dd>
+            </div>
+            <div>
+              <dt>剧本类型</dt>
+              <dd>{{ fraudScriptLabel(selectedFeatures.fraud_script_type) }}</dd>
+            </div>
+            <div>
+              <dt>源账户</dt>
+              <dd>{{ selectedInput.src_account }}</dd>
+            </div>
+            <div>
+              <dt>目标账户</dt>
+              <dd>{{ selectedInput.dst_account }}</dd>
+            </div>
+            <div>
+              <dt>设备</dt>
+              <dd>{{ selectedInput.device_id }}</dd>
+            </div>
+            <div>
+              <dt>IP</dt>
+              <dd>{{ selectedInput.ip }}</dd>
+            </div>
+            <div>
+              <dt>商户</dt>
+              <dd>{{ selectedInput.merchant_id }}</dd>
+            </div>
+            <div>
+              <dt>团伙</dt>
+              <dd>{{ selectedDecision.community_id || "--" }}</dd>
+            </div>
+          </dl>
 
-        <div class="console-breakdown-list">
-          <div v-for="row in scoreRows" :key="row.name" class="console-breakdown-row">
-            <span>{{ row.name }}</span>
-            <i><em :style="{ width: contributionWidth(row) }"></em></i>
-            <b>{{ displayValue(row.contribution) }}</b>
+          <div class="console-simple-section">
+            <h3>评分拆解</h3>
+            <div v-for="row in scoreRows" :key="row.name" class="console-simple-row">
+              <span>{{ row.name }}</span>
+              <b>{{ displayValue(row.contribution) }}</b>
+            </div>
           </div>
-        </div>
 
-        <div class="console-feature-list">
-          <span v-for="[key, value] in featureRows" :key="key">
-            <b>{{ key }}</b>
-            {{ displayValue(value) }}
-          </span>
-        </div>
-      </template>
+          <div class="console-simple-section">
+            <h3>实时特征</h3>
+            <div v-for="[key, value] in featureRows" :key="key" class="console-simple-row">
+              <span>{{ key }}</span>
+              <b>{{ displayValue(value) }}</b>
+            </div>
+          </div>
 
-      <div v-else class="case-empty">
-        <strong>暂无模型解释</strong>
-        <span>运行一次命令后显示输出</span>
-      </div>
+        </template>
+
+        <div v-else class="case-empty">
+          <strong>暂无模型解释</strong>
+          <span>运行一次命令后显示输出</span>
+        </div>
       </section>
     </div>
   </div>

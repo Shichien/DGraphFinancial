@@ -8,7 +8,7 @@ from typing import Iterable
 
 from ..core.config import APP_CONFIG
 from .schemas import TransactionEvent
-from .simulator import CHANNELS, FRAUD_TYPES, MultiSourceFraudSimulator, SimulatorConfig
+from .simulator import CHANNELS, DEMO_REPLAY_EVENT_COUNT, FRAUD_TYPES, MultiSourceFraudSimulator, SimulatorConfig, demo_simulator_config
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,7 +28,7 @@ DATA_SOURCES: dict[str, RealtimeDataSource] = {
         description="读取 Kafka、Flink、评分服务写入的风险事件库，展示真实实时链路结果。",
         mode="Kafka 实时链路",
         seed=21,
-        simulator_config=SimulatorConfig(seed=21, fraud_ratio=0.26, account_count=12_000, merchant_count=420, device_count=6_000),
+        simulator_config=demo_simulator_config(seed=21, fraud_ratio=0.26),
     ),
     "simulator": RealtimeDataSource(
         key="simulator",
@@ -36,7 +36,7 @@ DATA_SOURCES: dict[str, RealtimeDataSource] = {
         description="持续生成银行转账、钱包支付、商户收单、设备登录和黑名单事件。",
         mode="多源仿真流实时评分",
         seed=42,
-        simulator_config=SimulatorConfig(seed=42, fraud_ratio=0.26, account_count=12_000, merchant_count=420, device_count=6_000),
+        simulator_config=demo_simulator_config(seed=42, fraud_ratio=0.26),
     ),
     "dgraph_replay": RealtimeDataSource(
         key="dgraph_replay",
@@ -44,7 +44,7 @@ DATA_SOURCES: dict[str, RealtimeDataSource] = {
         description="使用 DGraph-Fin 风险账户先验驱动实时交易回放，突出图结构风险传播。",
         mode="DGraph 风险先验回放",
         seed=84,
-        simulator_config=SimulatorConfig(seed=84, fraud_ratio=0.34, account_count=12_000, merchant_count=360, device_count=5_000),
+        simulator_config=demo_simulator_config(seed=84, fraud_ratio=0.34),
     ),
     "amlsim_sample": RealtimeDataSource(
         key="amlsim_sample",
@@ -52,7 +52,7 @@ DATA_SOURCES: dict[str, RealtimeDataSource] = {
         description="从本地 AMLSim 样例交易文件回放账户转账和洗钱模式。",
         mode="AMLSim 样例回放",
         seed=126,
-        simulator_config=SimulatorConfig(seed=126, fraud_ratio=0.20, account_count=4_000, merchant_count=180, device_count=1_800),
+        simulator_config=demo_simulator_config(seed=126, fraud_ratio=0.20),
     ),
     "ieee_cis": RealtimeDataSource(
         key="ieee_cis",
@@ -60,7 +60,7 @@ DATA_SOURCES: dict[str, RealtimeDataSource] = {
         description="从 IEEE-CIS 交易表抽取金额、卡号和欺诈标签，转换为实时交易事件。",
         mode="IEEE 交易回放",
         seed=168,
-        simulator_config=SimulatorConfig(seed=168, fraud_ratio=0.18, account_count=16_000, merchant_count=520, device_count=7_000),
+        simulator_config=demo_simulator_config(seed=168, fraud_ratio=0.18),
     ),
 }
 
@@ -133,7 +133,7 @@ class IeeeReplaySimulator(ReplaySimulator):
     pass
 
 
-def _amlsim_transactions(limit: int = 6_000) -> list[TransactionEvent]:
+def _amlsim_transactions(limit: int = DEMO_REPLAY_EVENT_COUNT) -> list[TransactionEvent]:
     sample_dir = APP_CONFIG.dataset_path("amlsim_sample")
     tx_path = sample_dir / "tx.csv"
     alerts_path = sample_dir / "alerts.csv"
@@ -182,7 +182,7 @@ def _read_amlsim_alert_accounts(path: Path) -> set[int]:
     return accounts
 
 
-def _ieee_transactions(limit: int = 8_000) -> list[TransactionEvent]:
+def _ieee_transactions(limit: int = DEMO_REPLAY_EVENT_COUNT) -> list[TransactionEvent]:
     dataset_dir = APP_CONFIG.dataset_path("ieee_cis")
     tx_path = dataset_dir / "train_transaction.csv"
     events: list[TransactionEvent] = []
