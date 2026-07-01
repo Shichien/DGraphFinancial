@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AccountProfileEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "account_id",
+    "account_age_days",
+    "historical_risk_score",
+    "home_geo",
+    "segment",
+    "scenario_id"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "account_id": { "type": "integer" },
+    "account_age_days": { "type": "integer", "minimum": 0 },
+    "historical_risk_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "home_geo": { "type": "string" },
+    "segment": { "type": "string" },
+    "scenario_id": { "type": "string" }
+  },
+  "additionalProperties": false
+}

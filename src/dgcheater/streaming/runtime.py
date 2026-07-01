@@ -13,9 +13,11 @@ import requests
 import typer
 
 from ..core.config import APP_CONFIG
+from ..dashboard.graph_stream_assets import GRAPH_STREAM_HTML
 from ..dashboard.builder import build_showcase_dashboard
 from ..datasets.registry import get_dataset_spec
 from ..datasets.loaders import TabularDataset, load_dataset_from_spec
+from .dynamic_graph import DynamicGraphConfig, DynamicGraphDetector
 from .event_store import RiskEventStore, events_from_csv_and_trace, events_from_jsonl, resolve_database_url
 from .prototype import OnlineRiskScorer, build_transaction_stream
 
@@ -292,6 +294,75 @@ def serve_dashboard(
             "status": "ok",
             "database": config.database_url,
             "riskEventCount": summary.event_count,
+        }
+
+    uvicorn.run(api, host=host, port=port)
+
+
+@app.command("serve-graph-stream")
+def serve_graph_stream(
+    host: str = typer.Option("127.0.0.1"),
+    port: int = typer.Option(8060),
+    event_count: int = typer.Option(5_000, min=100, max=100_000),
+    window_size: int = typer.Option(900, min=50, max=2_000),
+    replay_interval_ms: int = typer.Option(180, min=20, max=5_000),
+) -> None:
+    """Serve a timestamp-ordered dynamic DGraph-Fin transaction graph."""
+    import uvicorn
+    from fastapi import FastAPI
+    from fastapi.responses import FileResponse, HTMLResponse
+    from fastapi.staticfiles import StaticFiles
+
+    config = RuntimeConfig.from_env()
+    raw = load_graph_dataset(config)
+    detector = DynamicGraphDetector(
+        raw,
+        dataset_key=config.dataset,
+        output_dir=config.output_dir,
+        config=DynamicGraphConfig(
+            event_count=event_count,
+            window_size=window_size,
+            replay_interval_ms=replay_interval_ms,
+        ),
+    )
+    api = FastAPI(title="DGCheater Dynamic Graph Stream", version="0.1.0")
+    frontend_dist = Path("frontend/graph-stream/dist")
+    frontend_index = frontend_dist / "index.html"
+    if (frontend_dist / "assets").exists():
+        api.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="graph-stream-assets")
+
+    @api.get("/", response_class=HTMLResponse)
+    def index() -> HTMLResponse | FileResponse:
+        if frontend_index.exists():
+            return FileResponse(frontend_index)
+        return GRAPH_STREAM_HTML
+
+    @api.get("/api/graph-stream")
+    def graph_stream() -> dict[str, object]:
+        return detector.snapshot()
+
+    @api.post("/api/graph-stream/reset")
+    def reset_graph_stream() -> dict[str, object]:
+        return detector.reset()
+
+    @api.get("/api/graph-node-neighborhood")
+    def graph_node_neighborhood(
+        node_id: int,
+        scope: str = "full",
+        limit: int = 80,
+    ) -> dict[str, object]:
+        safe_scope = scope if scope in {"full", "window"} else "full"
+        safe_limit = max(1, min(limit, 260))
+        return detector.node_neighborhood(node_id=node_id, scope=safe_scope, limit=safe_limit)
+
+    @api.get("/health")
+    def health() -> dict[str, object]:
+        snapshot = detector.snapshot()
+        return {
+            "status": "ok",
+            "dataset": config.dataset,
+            "position": snapshot["meta"]["position"],
+            "totalEvents": snapshot["meta"]["totalEvents"],
         }
 
     uvicorn.run(api, host=host, port=port)

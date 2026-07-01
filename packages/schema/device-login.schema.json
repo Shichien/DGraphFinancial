@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeviceLoginEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "account_id",
+    "device_id",
+    "ip",
+    "geo",
+    "source_channel",
+    "login_result",
+    "scenario_id"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "account_id": { "type": "integer" },
+    "device_id": { "type": "string" },
+    "ip": { "type": "string" },
+    "geo": { "type": "string" },
+    "source_channel": { "type": "string" },
+    "login_result": { "enum": ["success", "challenge"] },
+    "scenario_id": { "type": "string" }
+  },
+  "additionalProperties": false
+}

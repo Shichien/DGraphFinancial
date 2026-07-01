@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DelayedLabelEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "labeled_event_id",
+    "label",
+    "label_delay_seconds",
+    "fraud_script_type"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "labeled_event_id": { "type": "integer" },
+    "label": { "enum": ["fraud"] },
+    "label_delay_seconds": { "type": "integer", "minimum": 0 },
+    "fraud_script_type": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -208,7 +208,8 @@ class RiskEventStore:
     def summary(self) -> EventStoreSummary:
         self.init_schema()
         with self.connect() as connection:
-            total = int(connection.execute("SELECT COUNT(*) FROM risk_events").fetchone()[0])
+            total_row = connection.execute("SELECT COUNT(*) AS count FROM risk_events").fetchone()
+            total = int(total_row["count"])
             by_level = {
                 str(row["risk_level"]): int(row["count"])
                 for row in connection.execute("SELECT risk_level, COUNT(*) AS count FROM risk_events GROUP BY risk_level")

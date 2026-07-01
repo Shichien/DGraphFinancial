@@ -17,7 +17,6 @@
 - `docs/presentation/` Typst 答辩稿
 - `docs/` 多数据集接入说明
 - `output/` 训练产物、提交文件与图表
-- `external/` 公开参考实现
 
 ## 数据准备
 
@@ -58,16 +57,6 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 - 已新增调查控制台展示，可基于流式风险事件查看案件状态、复核结论、审计记录和溯源结构
 
 这些结果均来自当前已接入公开数据和本地实验产物。
-
-## 公开参考
-
-仓库内已拉取以下公开实现用于对比和吸收思路：
-
-- `external/DGraphFin/DGraphFin_baseline`
-- `external/DGraphFin/TGN-DGraphFin`
-- `external/DGraphFin/qiyue111-DgraphFin_anti_fraud`
-
-其中 `qiyue111-DgraphFin_anti_fraud` 公开写有更高离线 AUC，但其使用的数据版本与评估流程和当前工程不完全一致，不能直接视作本项目可复现分数。本项目只吸收其中不会造成测试信息泄漏的结构特征与融合思路。
 
 ## 多数据集扩展
 

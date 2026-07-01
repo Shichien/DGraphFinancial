@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TransactionEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "source_channel",
+    "src_account",
+    "dst_account",
+    "amount",
+    "merchant_id",
+    "device_id",
+    "ip",
+    "geo",
+    "edge_type",
+    "scenario_id",
+    "is_scripted_fraud",
+    "fraud_script_type"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "source_channel": { "type": "string" },
+    "src_account": { "type": "integer" },
+    "dst_account": { "type": "integer" },
+    "amount": { "type": "number", "minimum": 0 },
+    "merchant_id": { "type": "string" },
+    "device_id": { "type": "string" },
+    "ip": { "type": "string" },
+    "geo": { "type": "string" },
+    "edge_type": { "type": "integer" },
+    "scenario_id": { "type": "string" },
+    "is_scripted_fraud": { "type": "boolean" },
+    "fraud_script_type": { "type": "string" }
+  },
+  "additionalProperties": false
+}

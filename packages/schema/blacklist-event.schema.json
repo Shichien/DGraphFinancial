@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BlacklistEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "account_id",
+    "entity_type",
+    "entity_id",
+    "risk_reason",
+    "expires_at",
+    "scenario_id"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "account_id": { "type": "integer" },
+    "entity_type": { "enum": ["account", "device", "ip", "merchant"] },
+    "entity_id": { "type": "string" },
+    "risk_reason": { "type": "string" },
+    "expires_at": { "type": "integer" },
+    "scenario_id": { "type": "string" }
+  },
+  "additionalProperties": false
+}

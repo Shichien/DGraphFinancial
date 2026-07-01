@@ -1,0 +1,145 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dgcheater-rt-postgres
+    ports:
+      - "55432:5432"
+    environment:
+      POSTGRES_USER: dgcheater
+      POSTGRES_PASSWORD: dgcheater
+      POSTGRES_DB: dgcheater
+    volumes:
+      - realtime-postgres-data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dgcheater -d dgcheater"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: dgcheater-rt-redis
+    ports:
+      - "6379:6379"
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: dgcheater-rt-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/dgcheater
+    volumes:
+      - realtime-neo4j-data:/data
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: dgcheater-rt-kafka
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+  kafka-init:
+    image: apache/kafka:3.7.0
+    container_name: dgcheater-rt-kafka-init
+    depends_on:
+      - kafka
+    volumes:
+      - ./kafka/create-topics.sh:/opt/dgcheater/create-topics.sh:ro
+    command: ["bash", "/opt/dgcheater/create-topics.sh"]
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: dgcheater-rt-kafka-ui
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - "8088:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: dgcheater-realtime
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.7.1
+    container_name: dgcheater-rt-schema-registry
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - "8085:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  schema-init:
+    image: python:3.12-alpine
+    container_name: dgcheater-rt-schema-init
+    depends_on:
+      - schema-registry
+    network_mode: "service:schema-registry"
+    volumes:
+      - ../../packages/schema:/opt/dgcheater/schema:ro
+      - ./schema-registry/register-json-schemas.py:/opt/dgcheater/register-json-schemas.py:ro
+    command: ["python", "/opt/dgcheater/register-json-schemas.py", "--registry-url", "http://127.0.0.1:8081", "--schema-dir", "/opt/dgcheater/schema"]
+
+  flink-jobmanager:
+    build:
+      context: .
+      dockerfile: flink/Dockerfile
+    image: dgcheater-realtime-flink:1.19.1
+    container_name: dgcheater-rt-flink-jobmanager
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+    volumes:
+      - ../../flink/jobs:/opt/dgcheater/jobs:ro
+
+  flink-taskmanager:
+    image: dgcheater-realtime-flink:1.19.1
+    container_name: dgcheater-rt-flink-taskmanager
+    depends_on:
+      - flink-jobmanager
+    command: taskmanager -D taskmanager.numberOfTaskSlots=2
+    environment:
+      JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+      TASK_MANAGER_NUMBER_OF_TASK_SLOTS: 2
+    volumes:
+      - ../../flink/jobs:/opt/dgcheater/jobs:ro
+
+  flink-submit-realtime-features:
+    image: dgcheater-realtime-flink:1.19.1
+    container_name: dgcheater-rt-flink-submit-features
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      flink-jobmanager:
+        condition: service_started
+    volumes:
+      - ../../flink/jobs:/opt/dgcheater/jobs:ro
+      - ./flink/submit-realtime-features.sh:/opt/dgcheater/submit-realtime-features.sh:ro
+    command: ["bash", "/opt/dgcheater/submit-realtime-features.sh"]
+    profiles:
+      - flink-job
+
+volumes:
+  realtime-postgres-data:
+  realtime-neo4j-data:

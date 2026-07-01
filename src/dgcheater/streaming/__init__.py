@@ -1,5 +1,6 @@
 """Streaming replay and runtime components."""
 
+from .dynamic_graph import DynamicGraphConfig, DynamicGraphDetector
 from .prototype import (
     OnlineRiskScorer,
     StreamingPrototypeResult,
@@ -9,6 +10,8 @@ from .prototype import (
 )
 
 __all__ = [
+    "DynamicGraphConfig",
+    "DynamicGraphDetector",
     "OnlineRiskScorer",
     "StreamingPrototypeResult",
     "build_transaction_stream",

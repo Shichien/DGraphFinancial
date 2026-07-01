@@ -1,0 +1,320 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\usepackage{tikz}
+\usetikzlibrary{
+  arrows.meta,
+  calc,
+  decorations.pathreplacing,
+  fit,
+  positioning,
+  shadows.blur,
+  shapes.geometric,
+  shapes.symbols
+}
+
+\setmainfont{Times New Roman}
+\setCJKmainfont[
+  Path = C:/Windows/Fonts/,
+  UprightFont = SourceHanSerifSC-Regular.otf,
+  BoldFont = SourceHanSerifSC-Bold.otf
+]{Source Han Serif SC}
+
+\definecolor{ink}{HTML}{17201F}
+\definecolor{muted}{HTML}{61706B}
+\definecolor{paper}{HTML}{FAF7EF}
+\definecolor{gridline}{HTML}{DDD6C8}
+\definecolor{blue}{HTML}{256B8F}
+\definecolor{purple}{HTML}{6E57A8}
+\definecolor{orange}{HTML}{D96B2B}
+\definecolor{green}{HTML}{1F7A62}
+\definecolor{gold}{HTML}{A35C1F}
+\definecolor{red}{HTML}{B8322A}
+\definecolor{teal}{HTML}{0F766E}
+\definecolor{softblue}{HTML}{EAF4FA}
+\definecolor{softpurple}{HTML}{F1EDFA}
+\definecolor{softorange}{HTML}{FFF0E5}
+\definecolor{softgreen}{HTML}{EAF6F0}
+\definecolor{softgold}{HTML}{FFF4DD}
+\definecolor{softred}{HTML}{FDEDEC}
+\definecolor{softteal}{HTML}{E7F5F2}
+
+\tikzset{
+  font=\small,
+  title/.style={font=\LARGE\bfseries,text=ink,align=left},
+  subtitle/.style={font=\small,text=muted,align=left},
+  panel/.style n args={2}{
+    rounded corners=9pt,
+    draw=#1!38,
+    fill=#2,
+    line width=0.7pt,
+    inner sep=4pt
+  },
+  module/.style n args={2}{
+    rounded corners=8pt,
+    draw=#1!65,
+    fill=#2,
+    line width=1pt,
+    minimum width=42mm,
+    minimum height=19mm,
+    align=center,
+    text=ink,
+    blur shadow={shadow blur steps=5,shadow xshift=0.7pt,shadow yshift=-0.7pt,shadow opacity=18}
+  },
+  submodule/.style n args={2}{
+    rounded corners=6pt,
+    draw=#1!60,
+    fill=#2,
+    line width=0.8pt,
+    minimum width=31mm,
+    minimum height=11mm,
+    align=center,
+    text=ink
+  },
+  sourcechip/.style n args={2}{
+    rounded corners=5pt,
+    draw=#1!60,
+    fill=#2,
+    line width=0.8pt,
+    minimum width=20mm,
+    minimum height=10mm,
+    align=center,
+    text=ink,
+    font=\scriptsize
+  },
+  topic/.style={
+    cylinder,
+    shape border rotate=90,
+    aspect=0.23,
+    draw=purple!70,
+    fill=softpurple,
+    minimum width=34mm,
+    minimum height=12mm,
+    align=center,
+    text=ink,
+    line width=0.9pt
+  },
+  db/.style n args={2}{
+    cylinder,
+    shape border rotate=90,
+    aspect=0.29,
+    draw=#1!66,
+    fill=#2,
+    minimum width=34mm,
+    minimum height=14mm,
+    align=center,
+    text=ink,
+    line width=0.9pt
+  },
+  script/.style={
+    signal,
+    signal from=west,
+    signal to=east,
+    draw=red!72,
+    fill=softred,
+    minimum width=42mm,
+    minimum height=11mm,
+    align=center,
+    text=ink,
+    line width=0.85pt
+  },
+  note/.style={
+    rounded corners=5pt,
+    draw=gridline,
+    fill=paper,
+    text=muted,
+    font=\scriptsize,
+    align=left,
+    inner sep=4pt
+  },
+  flow/.style n args={1}{
+    -{Latex[length=2.6mm,width=1.6mm]},
+    draw=#1,
+    line width=1.25pt
+  },
+  sideflow/.style n args={1}{
+    -{Latex[length=2.2mm,width=1.4mm]},
+    draw=#1,
+    line width=0.9pt,
+    dashed,
+    opacity=0.82
+  },
+  feedback/.style={
+    -{Latex[length=2.2mm,width=1.4mm]},
+    draw=red,
+    line width=0.95pt,
+    dotted
+  },
+  labeltext/.style={
+    midway,
+    fill=paper,
+    inner sep=2.2pt,
+    font=\fontsize{7.5pt}{8.5pt}\selectfont,
+    text=muted
+  },
+  flowlabel/.style={
+    fill=paper,
+    inner sep=2.2pt,
+    font=\fontsize{7.5pt}{8.5pt}\selectfont,
+    text=muted
+  },
+  tag/.style n args={1}{
+    rounded corners=3pt,
+    draw=#1!55,
+    fill=#1!10,
+    text=#1!72!black,
+    font=\scriptsize\bfseries,
+    inner xsep=4pt,
+    inner ysep=2pt
+  }
+}
+
+\newcommand{\bul}[1]{\(\triangleright\)~#1}
+
+\begin{document}
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \fill[paper] (-8,-8) rectangle (422,246);
+  \foreach \x in {0,18,...,414} {
+    \draw[gridline!32,line width=0.25pt] (\x,-4) -- (\x,240);
+  }
+  \foreach \y in {0,18,...,234} {
+    \draw[gridline!32,line width=0.25pt] (-4,\y) -- (418,\y);
+  }
+
+  \node[title,anchor=west] at (0,232) {实时反诈平台总体架构};
+  \node[subtitle,anchor=west] at (0,224) {多源仿真、欺诈剧本注入、Kafka 多主题、Flink Keyed State、图状态服务、模型评分、风险入库、3D 大屏与审计回流};
+
+  \node[panel={blue}{softblue},fit={(2,160) (65,211)},label={[tag={blue},anchor=west]above left:多源仿真层}] {};
+  \node[panel={purple}{softpurple},fit={(84,134) (140,211)},label={[tag={purple},anchor=west]above left:Kafka 主题}] {};
+  \node[panel={orange}{softorange},fit={(159,150) (217,209)},label={[tag={orange},anchor=west]above left:Flink 实时处理层}] {};
+  \node[panel={green}{softgreen},fit={(238,156) (316,207)},label={[tag={green},anchor=west]above left:评分与决策层}] {};
+  \node[panel={red}{softred},fit={(338,140) (405,207)},label={[tag={red},anchor=west]above left:风险输出主题}] {};
+
+  \node[panel={gold}{softgold},fit={(2,68) (140,130)},label={[tag={gold},anchor=west]above left:图状态与关系存储}] {};
+  \node[panel={red}{softred},fit={(159,70) (227,130)},label={[tag={red},anchor=west]above left:审计事件库}] {};
+  \node[panel={teal}{softteal},fit={(248,70) (403,126)},label={[tag={teal},anchor=west]above left:Vue 3D 风险总控大屏}] {};
+
+  \node[module={blue}{softblue}] (sim) at (34,190) {多源异构仿真器};
+  \node[sourcechip={blue}{softblue}] at (12,207) {银行转账};
+  \node[sourcechip={blue}{softblue}] at (34,207) {钱包支付};
+  \node[sourcechip={blue}{softblue}] at (56,207) {商户收单};
+  \node[sourcechip={blue}{softblue}] at (12,173) {设备事件};
+  \node[sourcechip={blue}{softblue}] at (34,173) {IP/地理};
+  \node[sourcechip={blue}{softblue}] at (56,173) {风险名单};
+  \node[script] (fraud) at (34,147) {欺诈剧本注入器};
+  \node[note,text width=60mm] at (34,128) {
+    \bul{分散汇入/集中转出}\quad \bul{小额试探/大额转移}\\
+    \bul{团伙循环转账}\quad \bul{设备复用}\quad \bul{IP 聚集}\\
+    \bul{商户洗钱}\quad \bul{跨渠道规避}\quad \bul{窗口突发交易}
+  };
+
+  \node[topic] (raw1) at (112,200) {transactions.raw};
+  \node[topic] (raw2) at (112,184) {devices.raw};
+  \node[topic] (raw3) at (112,168) {accounts.raw};
+  \node[topic] (raw4) at (112,152) {blacklist.raw};
+  \node[topic] (labels) at (112,136) {labels.delayed};
+
+  \node[module={orange}{softorange}] (flink) at (188,190) {Flink 作业\\清洗 + Keyed State + 窗口特征};
+  \node[note,text width=56mm] at (188,164) {
+    \bul{transactions.cleaned}\\
+    \bul{1/5/10 分钟次数、金额、对手方数量}\\
+    \bul{设备复用账户数、IP 关联账户数、商户集中度}\\
+    \bul{实时入度/出度、最近交易间隔、渠道切换、突发强度}
+  };
+  \node[topic] (features) at (188,144) {features.realtime};
+
+  \node[module={green}{softgreen}] (score) at (277,190) {模型评分服务};
+  \node[submodule={green}{softgreen}] (rule) at (246,169) {规则分};
+  \node[submodule={green}{softgreen}] (offline) at (277,169) {离线模型分};
+  \node[submodule={green}{softgreen}] (graphscore) at (308,169) {动态图分};
+  \node[note,text width=72mm] at (277,151) {
+    \(\mathrm{final}=0.45\,\mathrm{offline}+0.30\,\mathrm{behavior}+0.15\,\mathrm{community}+0.10\,\mathrm{rule}\)
+  };
+
+  \node[script] (decision) at (372,199) {risk\_score / risk\_level / decision};
+  \node[topic] (riskScored) at (372,181) {risk.scored};
+  \node[topic] (riskAlerts) at (372,164) {risk.alerts};
+  \node[topic] (riskAudit) at (372,147) {risk.audit};
+
+  \node[module={gold}{softgold}] (graphsvc) at (38,109) {graph-state-service\\动态邻接表};
+  \node[db={gold}{softgold}] (redis) at (36,84) {Redis\\实时状态};
+  \node[db={gold}{softgold}] (neo4j) at (97,84) {Neo4j\\异构关系图};
+  \node[note,text width=55mm] (graphapi) at (100,111) {
+    \texttt{/graph/node/features}\\
+    \texttt{/graph/node/neighbors}\\
+    \texttt{/graph/community}
+  };
+
+  \node[db={red}{softred}] (postgres) at (193,108) {PostgreSQL\\risk\_events};
+  \node[note,text width=63mm] at (193,83) {
+    risk\_event\_reasons、risk\_event\_edges、risk\_audit\_logs、case\_actions
+  };
+
+  \node[module={teal}{softteal}] (vue) at (326,110) {Vue 3D 风险大屏};
+  \node[submodule={teal}{softteal}] (vgraph) at (270,85) {3D 动态图\\团伙高亮};
+  \node[submodule={teal}{softteal}] (valert) at (326,85) {实时告警\\高危排行};
+  \node[submodule={teal}{softteal}] (vops) at (382,85) {Kafka 吞吐\\Flink 延迟};
+  \node[module={red}{softred}] (caseapi) at (326,58) {审计与处置接口};
+
+  \node[note,text width=150mm] at (210,39) {
+    稳定事件字段：\texttt{event\_id, timestamp, source\_channel, src\_account, dst\_account, amount, merchant\_id, device\_id, ip, geo, edge\_type, scenario\_id, is\_scripted\_fraud, fraud\_script\_type}
+  };
+
+  \draw[flow={blue}] (sim.east) -- node[pos=0.42,labeltext,above] {持续原始事件} (raw1.west);
+  \draw[flow={blue}] (sim.east) to[out=0,in=180] (raw2.west);
+  \draw[flow={blue}] (sim.east) to[out=0,in=180] (raw3.west);
+  \draw[flow={red}] (fraud.north) -- node[labeltext,left] {剧本注入} (sim.south);
+  \draw[flow={red}] (fraud.east) -- (raw4.west);
+  \draw[sideflow={purple}] (labels.west) -- ++(-18,0) |- node[pos=0.24,labeltext,below] {延迟标签} (fraud.east);
+
+  \draw[flow={purple}] (raw1.east) -- node[pos=0.56,labeltext,above] {Kafka 输入} (flink.west);
+  \draw[flow={purple}] (raw2.east) to[out=0,in=180] (flink.west);
+  \draw[flow={purple}] (raw3.east) to[out=0,in=180] (flink.west);
+  \draw[flow={purple}] (raw4.east) to[out=0,in=180] (flink.west);
+  \draw[flow={orange}] (flink.south) -- (features.north);
+  \draw[flow={orange}] (features.east) -- (228,144) -- (228,181) -- node[pos=0.36,labeltext,left] {实时特征} (score.south west);
+
+  \draw[flow={green}] (score.south west) -- (rule.north);
+  \draw[flow={green}] (score.south) -- (offline.north);
+  \draw[flow={green}] (score.south east) -- (graphscore.north);
+  \draw[flow={green}] (score.east) -- node[labeltext,above] {评分结果} (decision.west);
+  \draw[flow={red}] (decision.south) -- (riskScored.north);
+  \draw[flow={red}] (riskScored.south) -- (riskAlerts.north);
+  \draw[flow={red}] (riskAlerts.south) -- (riskAudit.north);
+
+  \draw[sideflow={gold}] (flink.south west) -- ++(-24,-21) -- (146,128) -- (76,128) -- (76,118) -- (64,118) -- (64,109) -- (graphsvc.east);
+  \node[flowlabel] at (111,128) {状态更新};
+  \draw[sideflow={gold}] (score.west) -- (222,190) -- (222,122) -- (132,122) -- (132,111) -- (graphapi.east);
+  \node[flowlabel] at (177,122) {图特征查询};
+  \draw[flow={gold}] (graphsvc) -- (redis);
+  \draw[flow={gold}] (graphsvc) -- (neo4j);
+
+  \draw[sideflow={red}] (riskAudit.west) -- ++(-55,0) |- (postgres.east);
+  \node[flowlabel] at (326,147) {结构化入库};
+  \draw[sideflow={teal}] (vue.south west) -- (vgraph.north);
+  \draw[sideflow={teal}] (vue.south) -- node[pos=0.45,labeltext,right] {告警订阅} (valert.north);
+  \draw[sideflow={teal}] (vue.south east) -- (vops.north);
+  \draw[sideflow={gold}] (vgraph.west) -- ++(-14,0) -- ++(0,-19) -- (114,66) -- (114,84) -- (neo4j.east);
+  \node[flowlabel] at (177,66) {节点/社区追溯};
+
+  \draw[sideflow={red}] (riskAudit.east) -- ++(18,0) -- ++(0,-89) -- (caseapi.east);
+  \node[flowlabel] at (407,100) {处置流};
+  \draw[feedback] (caseapi.west) -- ++(-55,0) |- (postgres.east);
+  \node[flowlabel] at (224,104) {复核动作与审计};
+
+  \draw[decorate,decoration={brace,amplitude=5pt},draw=muted,line width=0.65pt]
+    (0,26) -- node[below=6pt,text=muted,font=\scriptsize] {完整闭环：事件持续产生 $\rightarrow$ 实时计算 $\rightarrow$ 模型评分 $\rightarrow$ 告警入库 $\rightarrow$ 大屏追溯 $\rightarrow$ 审计回流} (407,26);
+
+  \node[tag={blue}] at (28,10) {数据流};
+  \draw[flow={blue}] (45,10) -- (64,10);
+  \node[tag={gold}] at (94,10) {状态查询};
+  \draw[sideflow={gold}] (114,10) -- (133,10);
+  \node[tag={red}] at (164,10) {审计反馈};
+  \draw[feedback] (184,10) -- (203,10);
+  \node[tag={purple}] at (238,10) {Kafka 主题};
+  \node[tag={orange}] at (280,10) {Keyed State};
+  \node[tag={teal}] at (326,10) {3D 风险大屏};
+\end{tikzpicture}
+\end{document}
+

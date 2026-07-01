@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RiskDecision",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "src_account",
+    "dst_account",
+    "risk_score",
+    "risk_level",
+    "decision",
+    "reason_codes",
+    "evidence",
+    "community_id",
+    "related_nodes"
+  ],
+  "properties": {
+    "event_id": { "type": "integer" },
+    "timestamp": { "type": "integer" },
+    "src_account": { "type": "integer" },
+    "dst_account": { "type": "integer" },
+    "risk_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "risk_level": { "enum": ["critical", "high", "medium", "low"] },
+    "decision": { "type": "string" },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "object" },
+    "community_id": { "type": "string" },
+    "related_nodes": { "type": "array", "items": { "type": "integer" } }
+  },
+  "additionalProperties": false
+}

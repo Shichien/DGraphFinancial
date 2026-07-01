@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1180" viewBox="0 0 1900 1180">
+  <defs>
+    <style>
+      .bg { fill: #ffffff; }
+      .title { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 42px; font-weight: 700; fill: #17201f; }
+      .subtitle { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 20px; fill: #61706b; }
+      .section { font-family: "Times New Roman", "Source Han Serif SC", serif; font-size: 20px; font-weight: 700; letter-spacing: 3px; }
+      .h1 { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 24px; font-weight: 700; fill: #17201f; }
+      .txt { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 17px; fill: #52605c; }
+      .small { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 15px; fill: #61706b; }
+      .formula { font-family: "Times New Roman", "Source Han Serif SC", Times, serif; font-size: 20px; font-style: italic; fill: #17201f; }
+      .metric { font-family: "Times New Roman", "Source Han Serif SC", Times, serif; font-size: 20px; font-weight: 700; fill: #17201f; }
+      .label { font-family: "Source Han Serif SC", "SimSun", serif; font-size: 17px; font-weight: 600; fill: #263238; }
+      .panel { fill: #ffffff; stroke-width: 1.4; filter: url(#shadow); }
+      .card { fill: #ffffff; stroke-width: 2.1; filter: url(#shadow); }
+      .pill { stroke-width: 1.4; }
+      .line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .thin { fill: none; stroke: #b8c0bd; stroke-width: 1.3; }
+      .grid { stroke: #ecf0ef; stroke-width: 1; }
+    </style>
+    <filter id="shadow" x="-6%" y="-6%" width="112%" height="112%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.075"/>
+    </filter>
+    <marker id="blueArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#0072B2"/>
+    </marker>
+    <marker id="tealArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#00897B"/>
+    </marker>
+    <marker id="purpleArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#7E57C2"/>
+    </marker>
+    <marker id="amberArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#D99100"/>
+    </marker>
+    <marker id="redArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#D55E00"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1900" height="1180"/>
+  <g opacity="0.65">
+    <path class="grid" d="M90 160H1810M90 300H1810M90 440H1810M90 580H1810M90 720H1810M90 860H1810M90 1000H1810"/>
+    <path class="grid" d="M190 140V1040M380 140V1040M570 140V1040M760 140V1040M950 140V1040M1140 140V1040M1330 140V1040M1520 140V1040M1710 140V1040"/>
+  </g>
+
+  <text class="title" x="90" y="72">DGraph 图机器学习算法链路</text>
+  <text class="subtitle" x="90" y="112">图数据读取、无泄漏图特征工程、双模型融合训练、可信验证与实时风控复用</text>
+  <line x1="90" y1="146" x2="1810" y2="146" stroke="#CFD8DC" stroke-width="1.6"/>
+
+  <rect class="panel" x="90" y="185" width="240" height="475" rx="22" stroke="#0072B2"/>
+  <rect class="panel" x="390" y="185" width="420" height="475" rx="22" stroke="#00897B"/>
+  <rect class="panel" x="870" y="185" width="350" height="475" rx="22" stroke="#7E57C2"/>
+  <rect class="panel" x="1280" y="185" width="530" height="475" rx="22" stroke="#D99100"/>
+
+  <rect class="panel" x="90" y="725" width="520" height="245" rx="22" stroke="#D55E00"/>
+  <rect class="panel" x="690" y="725" width="490" height="245" rx="22" stroke="#00897B"/>
+  <rect class="panel" x="1260" y="725" width="550" height="245" rx="22" stroke="#0072B2"/>
+
+  <text class="section" x="125" y="225" fill="#0072B2">GRAPH INPUT</text>
+  <line x1="125" y1="240" x2="292" y2="240" stroke="#D9E7EF" stroke-width="2"/>
+  <text class="section" x="425" y="225" fill="#00897B">FEATURE ENGINEERING</text>
+  <line x1="425" y1="240" x2="770" y2="240" stroke="#D8EDEA" stroke-width="2"/>
+  <text class="section" x="905" y="225" fill="#7E57C2">SAFE SUPERVISION</text>
+  <line x1="905" y1="240" x2="1180" y2="240" stroke="#E2DDF2" stroke-width="2"/>
+  <text class="section" x="1315" y="225" fill="#D99100">MODEL ENSEMBLE</text>
+  <line x1="1315" y1="240" x2="1768" y2="240" stroke="#F2E4BF" stroke-width="2"/>
+  <text class="section" x="125" y="765" fill="#D55E00">VALIDATION</text>
+  <line x1="125" y1="780" x2="570" y2="780" stroke="#F0D8D0" stroke-width="2"/>
+  <text class="section" x="725" y="765" fill="#00897B">REAL-TIME REUSE</text>
+  <line x1="725" y1="780" x2="1140" y2="780" stroke="#D8EDEA" stroke-width="2"/>
+  <text class="section" x="1295" y="765" fill="#0072B2">ARTIFACTS AND DECISION</text>
+  <line x1="1295" y1="780" x2="1768" y2="780" stroke="#D9E7EF" stroke-width="2"/>
+
+  <g id="input">
+    <rect class="card" x="130" y="280" width="160" height="76" rx="18" stroke="#0072B2"/>
+    <text class="h1" x="210" y="312" text-anchor="middle">dgraphfin.npz</text>
+    <text class="small" x="210" y="338" text-anchor="middle">统一图数据入口</text>
+    <rect class="pill" x="125" y="395" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="164" y="419" text-anchor="middle">节点特征</text>
+    <rect class="pill" x="218" y="395" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="257" y="419" text-anchor="middle">边列表</text>
+    <rect class="pill" x="125" y="452" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="164" y="476" text-anchor="middle">边类型</text>
+    <rect class="pill" x="218" y="452" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="257" y="476" text-anchor="middle">时间戳</text>
+    <rect class="pill" x="125" y="509" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="164" y="533" text-anchor="middle">训练索引</text>
+    <rect class="pill" x="218" y="509" width="78" height="36" rx="10" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="small" x="257" y="533" text-anchor="middle">测试索引</text>
+    <text class="txt" x="210" y="598" text-anchor="middle">标签只在训练阶段可见</text>
+    <text class="txt" x="210" y="626" text-anchor="middle">数据边界前置固化</text>
+  </g>
+
+  <g id="feature">
+    <rect class="card" x="435" y="280" width="330" height="74" rx="18" stroke="#00897B"/>
+    <text class="h1" x="600" y="313" text-anchor="middle">动态图结构展开</text>
+    <text class="small" x="600" y="339" text-anchor="middle">src / dst / type / timestamp</text>
+
+    <rect x="440" y="392" width="145" height="82" rx="16" fill="#FFFFFF" stroke="#00897B" stroke-width="1.8"/>
+    <text class="h1" x="512" y="424" text-anchor="middle">度统计</text>
+    <text class="small" x="512" y="452" text-anchor="middle">入度 出度 总度</text>
+    <line x1="470" y1="463" x2="554" y2="463" stroke="#B2DFDB" stroke-width="7" stroke-linecap="round"/>
+
+    <rect x="620" y="392" width="145" height="82" rx="16" fill="#FFFFFF" stroke="#00897B" stroke-width="1.8"/>
+    <text class="h1" x="692" y="424" text-anchor="middle">边类型</text>
+    <text class="small" x="692" y="452" text-anchor="middle">in / out / total</text>
+    <circle cx="662" cy="464" r="8" fill="#B2DFDB"/><circle cx="692" cy="464" r="8" fill="#FFE082"/><circle cx="722" cy="464" r="8" fill="#CE93D8"/>
+
+    <rect x="440" y="508" width="145" height="82" rx="16" fill="#FFFFFF" stroke="#00897B" stroke-width="1.8"/>
+    <text class="h1" x="512" y="540" text-anchor="middle">时间统计</text>
+    <text class="small" x="512" y="568" text-anchor="middle">均值 最小 最大 跨度</text>
+    <polyline points="468,575 488,563 512,569 534,548 556,555" fill="none" stroke="#00897B" stroke-width="3.2"/>
+
+    <rect x="620" y="508" width="145" height="82" rx="16" fill="#FFFFFF" stroke="#00897B" stroke-width="1.8"/>
+    <text class="h1" x="692" y="540" text-anchor="middle">邻居聚合</text>
+    <text class="small" x="692" y="568" text-anchor="middle">最大 最小 均值</text>
+    <circle cx="692" cy="575" r="14" fill="none" stroke="#00897B" stroke-width="2"/>
+    <circle cx="674" cy="575" r="5" fill="#FFB300"/><circle cx="692" cy="575" r="5" fill="#00897B"/><circle cx="710" cy="575" r="5" fill="#7E57C2"/>
+
+    <rect class="pill" x="462" y="616" width="276" height="36" rx="18" fill="#E0F2F1" stroke="#80CBC4"/>
+    <text class="formula" x="600" y="640" text-anchor="middle">X_graph = [raw, degree, type, time, neighbor]</text>
+  </g>
+
+  <g id="safe">
+    <rect class="card" x="920" y="280" width="250" height="78" rx="18" stroke="#7E57C2"/>
+    <text class="h1" x="1045" y="312" text-anchor="middle">已知标签邻域</text>
+    <text class="small" x="1045" y="338" text-anchor="middle">只来自训练节点</text>
+    <g transform="translate(925 400)">
+      <circle cx="120" cy="74" r="22" fill="#F3E5F5" stroke="#7E57C2" stroke-width="2"/>
+      <text class="metric" x="120" y="81" text-anchor="middle">v</text>
+      <circle cx="54" cy="32" r="14" fill="#FFCDD2" stroke="#D55E00"/>
+      <circle cx="186" cy="32" r="14" fill="#C8E6C9" stroke="#009E73"/>
+      <circle cx="60" cy="128" r="14" fill="#E1BEE7" stroke="#7E57C2"/>
+      <circle cx="180" cy="128" r="14" fill="#FFF3C4" stroke="#FFB300"/>
+      <path class="thin" d="M101 62L66 40M139 62L174 40M102 87L72 118M138 87L168 118"/>
+    </g>
+    <text class="txt" x="1045" y="576" text-anchor="middle">邻居欺诈数、正常数与比例</text>
+    <rect class="pill" x="920" y="615" width="250" height="36" rx="18" fill="#F7F2FB" stroke="#CE93D8"/>
+    <text class="small" x="1045" y="638" text-anchor="middle">验证和测试标签不进入特征生成</text>
+  </g>
+
+  <g id="model">
+    <rect class="pill" x="1314" y="424" width="118" height="34" rx="17" fill="#F7F2FB" stroke="#CE93D8"/>
+    <text class="small" x="1373" y="446" text-anchor="middle">训练特征</text>
+
+    <rect class="card" x="1330" y="292" width="160" height="102" rx="18" stroke="#D99100"/>
+    <text class="h1" x="1410" y="326" text-anchor="middle">XGBoost</text>
+    <text class="small" x="1410" y="354" text-anchor="middle">主模型</text>
+    <path d="M1370 376h80M1382 376v-22M1410 376v-30M1438 376v-18" stroke="#D99100" stroke-width="3.2" stroke-linecap="round"/>
+
+    <rect class="card" x="1605" y="292" width="160" height="102" rx="18" stroke="#D99100"/>
+    <text class="h1" x="1685" y="326" text-anchor="middle">LightGBM</text>
+    <text class="small" x="1685" y="354" text-anchor="middle">辅助模型</text>
+    <path d="M1644 375c16-34 33-34 50 0c16-24 31-24 48-6" fill="none" stroke="#D99100" stroke-width="3.2"/>
+
+    <rect class="card" x="1440" y="475" width="230" height="86" rx="18" stroke="#D99100"/>
+    <text class="h1" x="1555" y="508" text-anchor="middle">概率融合</text>
+    <text class="formula" x="1555" y="538" text-anchor="middle">p = wx px + wl pl</text>
+
+    <rect class="pill" x="1410" y="610" width="290" height="40" rx="20" fill="#FFF3C4" stroke="#FFE082"/>
+    <text class="h1" x="1555" y="637" text-anchor="middle">欺诈概率与风险排序</text>
+  </g>
+
+  <g id="validation">
+    <rect class="card" x="135" y="815" width="180" height="80" rx="17" stroke="#D55E00"/>
+    <text class="h1" x="225" y="848" text-anchor="middle">训练验证边界</text>
+    <text class="small" x="225" y="874" text-anchor="middle">train / valid / test</text>
+    <rect class="card" x="385" y="815" width="180" height="80" rx="17" stroke="#D55E00"/>
+    <text class="h1" x="475" y="848" text-anchor="middle">泄漏排查</text>
+    <text class="small" x="475" y="874" text-anchor="middle">禁用不可信字段</text>
+    <text class="metric" x="165" y="932">DGraph-Fin AUC ≈ 0.8281</text>
+    <text class="metric" x="165" y="958">DGraph-Fin2 without node time AUC ≈ 0.8279</text>
+  </g>
+
+  <g id="realtime">
+    <rect class="card" x="740" y="815" width="170" height="80" rx="17" stroke="#00897B"/>
+    <text class="h1" x="825" y="848" text-anchor="middle">模型落盘</text>
+    <text class="small" x="825" y="874" text-anchor="middle">joblib</text>
+    <rect class="card" x="970" y="815" width="170" height="80" rx="17" stroke="#00897B"/>
+    <text class="h1" x="1055" y="848" text-anchor="middle">实时特征</text>
+    <text class="small" x="1055" y="874" text-anchor="middle">窗口 + 图邻域</text>
+    <rect class="pill" x="835" y="922" width="230" height="38" rx="19" fill="#E0F2F1" stroke="#80CBC4"/>
+    <text class="formula" x="950" y="947" text-anchor="middle">offline_model_score</text>
+  </g>
+
+  <g id="artifacts">
+    <rect class="card" x="1310" y="815" width="170" height="80" rx="17" stroke="#0072B2"/>
+    <text class="h1" x="1395" y="848" text-anchor="middle">特征重要度</text>
+    <text class="small" x="1395" y="874" text-anchor="middle">CSV</text>
+    <rect class="card" x="1550" y="815" width="170" height="80" rx="17" stroke="#0072B2"/>
+    <text class="h1" x="1635" y="848" text-anchor="middle">评分解释</text>
+    <text class="small" x="1635" y="874" text-anchor="middle">reason codes</text>
+    <rect class="pill" x="1410" y="922" width="250" height="38" rx="19" fill="#E3F2FD" stroke="#90CAF9"/>
+    <text class="h1" x="1535" y="948" text-anchor="middle">风险分数、等级与判定</text>
+  </g>
+
+  <g id="arrows">
+    <path class="line" d="M290 318H390" stroke="#0072B2" stroke-width="3.2" marker-end="url(#blueArrow)"/>
+    <rect x="315" y="287" width="66" height="28" rx="14" fill="#FFFFFF" stroke="#D9E7EF"/>
+    <text class="label" x="348" y="307" text-anchor="middle">解析</text>
+
+    <path class="line" d="M765 634H870" stroke="#00897B" stroke-width="3.2" marker-end="url(#tealArrow)"/>
+    <rect x="784" y="602" width="94" height="28" rx="14" fill="#FFFFFF" stroke="#D8EDEA"/>
+    <text class="label" x="831" y="622" text-anchor="middle">基础特征</text>
+
+    <path class="line" d="M1170 319H1245V441H1314" stroke="#7E57C2" stroke-width="3" marker-end="url(#purpleArrow)"/>
+    <rect x="1212" y="365" width="94" height="28" rx="14" fill="#FFFFFF" stroke="#E2DDF2"/>
+    <text class="label" x="1259" y="385" text-anchor="middle">增强特征</text>
+    <path class="line" d="M1432 441H1515V343H1605" stroke="#7E57C2" stroke-width="2.6" marker-end="url(#purpleArrow)"/>
+    <path class="line" d="M1373 423V394" stroke="#7E57C2" stroke-width="2.6" marker-end="url(#purpleArrow)"/>
+
+    <path class="line" d="M1410 394V430H1518V475" stroke="#D99100" stroke-width="3.2" marker-end="url(#amberArrow)"/>
+    <path class="line" d="M1685 394V430H1592V475" stroke="#D99100" stroke-width="3.2" marker-end="url(#amberArrow)"/>
+    <path class="line" d="M1555 561V610" stroke="#D99100" stroke-width="3.2" marker-end="url(#amberArrow)"/>
+
+    <path class="line" d="M210 660V815" stroke="#D55E00" stroke-width="2.6" stroke-dasharray="8 8" marker-end="url(#redArrow)"/>
+    <rect x="165" y="688" width="90" height="28" rx="14" fill="#FFFFFF" stroke="#F0D8D0"/>
+    <text class="label" x="210" y="708" text-anchor="middle">索引边界</text>
+
+    <path class="line" d="M475 815V700H1045V651" stroke="#D55E00" stroke-width="2.6" stroke-dasharray="8 8" marker-end="url(#redArrow)"/>
+    <rect x="668" y="686" width="122" height="28" rx="14" fill="#FFFFFF" stroke="#F0D8D0"/>
+    <text class="label" x="729" y="706" text-anchor="middle">泄漏约束</text>
+
+    <path class="line" d="M1555 650V690H825V815" stroke="#00897B" stroke-width="3" marker-end="url(#tealArrow)"/>
+    <rect x="1118" y="676" width="92" height="28" rx="14" fill="#FFFFFF" stroke="#D8EDEA"/>
+    <text class="label" x="1164" y="696" text-anchor="middle">模型产物</text>
+
+    <path class="line" d="M910 855H970" stroke="#00897B" stroke-width="3" marker-end="url(#tealArrow)"/>
+    <path class="line" d="M1055 895V941H1260" stroke="#00897B" stroke-width="3" marker-end="url(#tealArrow)"/>
+
+    <path class="line" d="M1555 650V704H1635V815" stroke="#0072B2" stroke-width="3" marker-end="url(#blueArrow)"/>
+    <path class="line" d="M1480 855H1550" stroke="#0072B2" stroke-width="3" marker-end="url(#blueArrow)"/>
+    <path class="line" d="M1635 895V922" stroke="#0072B2" stroke-width="3" marker-end="url(#blueArrow)"/>
+  </g>
+
+  <rect x="90" y="1040" width="1720" height="60" rx="30" fill="#FFFFFF" stroke="#CFD8DC" stroke-width="1.4"/>
+  <circle cx="130" cy="1070" r="8" fill="#0072B2"/><text class="txt" x="150" y="1077">图输入与产物</text>
+  <circle cx="310" cy="1070" r="8" fill="#00897B"/><text class="txt" x="330" y="1077">图特征与实时复用</text>
+  <circle cx="560" cy="1070" r="8" fill="#7E57C2"/><text class="txt" x="580" y="1077">无泄漏监督增强</text>
+  <circle cx="820" cy="1070" r="8" fill="#D99100"/><text class="txt" x="840" y="1077">融合模型</text>
+  <circle cx="1010" cy="1070" r="8" fill="#D55E00"/><text class="txt" x="1030" y="1077">验证约束</text>
+  <text class="txt" x="1235" y="1077">实线箭头表示数据与模型流向，虚线箭头表示验证边界和泄漏控制。</text>
+</svg>
