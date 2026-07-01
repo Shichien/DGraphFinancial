@@ -29,6 +29,8 @@ node_modules/
 # Project-local data and generated outputs
 data/*
 !data/.gitkeep
+!data/runtime-artifacts/
+!data/runtime-artifacts/**
 data.zip
 output/*
 !output/.gitkeep

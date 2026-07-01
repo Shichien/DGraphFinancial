@@ -9,10 +9,13 @@ $requiredFiles = @(
     "data\amlsim\sample\outputs\tx.csv",
     "data\amlsim\sample\outputs\alerts.csv",
     "data\amlsim\sample\outputs\cash_tx.csv",
-    "output\realtime\dgraph_account_prior_12000.joblib",
-    "output\realtime\models\xgboost.joblib",
-    "output\realtime\models\lightgbm_aux.joblib",
-    "output\realtime\models\metadata.json",
+    "data\runtime-artifacts\output\realtime\dgraph_account_prior_12000.joblib",
+    "data\runtime-artifacts\output\realtime\models\xgboost.joblib",
+    "data\runtime-artifacts\output\realtime\models\lightgbm_aux.joblib",
+    "data\runtime-artifacts\output\realtime\models\metadata.json",
+    "data\runtime-artifacts\output\dgraph_fin\models\xgboost.joblib",
+    "data\runtime-artifacts\output\dgraph_fin\models\lightgbm_aux.joblib",
+    "data\runtime-artifacts\output\dgraph_fin\metrics\xgboost_metrics.json",
     "docs\datasets\data-sharing.md"
 )
 

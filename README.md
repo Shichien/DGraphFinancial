@@ -26,6 +26,12 @@
 
 项目默认路径、训练参数、模型参数、流式服务端点与健康检查端点集中放在 `config.toml`。如需临时覆盖数据路径，也可以继续通过命令行参数传入。
 
+实时大屏还会读取一组小型运行产物，用于加载 DGraph 账户风险先验。为了让新机器拉取代码后只挂载 `data/` 就能启动，运行产物统一放在：
+
+`data/runtime-artifacts/output`
+
+如果本地 `output/` 目录下已经有同名产物，程序会优先使用 `output/`；如果没有，会自动读取 `data/runtime-artifacts/output`。
+
 ## 快速开始
 
 ```powershell

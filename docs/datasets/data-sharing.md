@@ -23,10 +23,15 @@
 - `data/amlsim/sample/outputs/tx.csv`
 - `data/amlsim/sample/outputs/alerts.csv`
 - `data/amlsim/sample/outputs/cash_tx.csv`
-- `output/realtime/dgraph_account_prior_12000.joblib`
-- `output/realtime/models/xgboost.joblib`
-- `output/realtime/models/lightgbm_aux.joblib`
-- `output/realtime/models/metadata.json`
+- `data/runtime-artifacts/output/realtime/dgraph_account_prior_12000.joblib`
+- `data/runtime-artifacts/output/realtime/models/xgboost.joblib`
+- `data/runtime-artifacts/output/realtime/models/lightgbm_aux.joblib`
+- `data/runtime-artifacts/output/realtime/models/metadata.json`
+- `data/runtime-artifacts/output/dgraph_fin/models/xgboost.joblib`
+- `data/runtime-artifacts/output/dgraph_fin/models/lightgbm_aux.joblib`
+- `data/runtime-artifacts/output/dgraph_fin/metrics/xgboost_metrics.json`
+
+程序仍然兼容原来的 `output/` 目录。如果 `output/` 下存在同名产物，会优先读取 `output/`；如果不存在，会自动读取 `data/runtime-artifacts/output`。因此新机器只要把完整 `data/` 目录挂载到项目根目录，就能让实时大屏加载账户风险先验。
 
 当前已生成的演示包位置：
 

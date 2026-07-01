@@ -41,7 +41,7 @@ class DGraphAccountPrior:
         requested_node_count = node_count or int(os.getenv("DG_DGRAPH_PRIOR_NODE_COUNT", "12000"))
         if requested_node_count <= 0:
             raise ValueError("DG_DGRAPH_PRIOR_NODE_COUNT 必须大于 0。")
-        cache_path = _cache_path(root, requested_node_count)
+        cache_path = _existing_artifact_path(root, _cache_path(root, requested_node_count))
         if cache_path.exists():
             payload = joblib.load(cache_path)
             return cls(
@@ -59,7 +59,7 @@ class DGraphAccountPrior:
         label_features = _build_known_label_neighbor_features(raw.edge_index, raw.train_idx, raw.y, raw.num_nodes)[nodes]
         score_matrix = np.concatenate([bundle.features, label_features], axis=1)
 
-        model_dir = _resolve_path(root, APP_CONFIG.paths.output_dir) / "dgraph_fin" / "models"
+        model_dir = _artifact_dir(root, "dgraph_fin", "models")
         xgb_path = model_dir / "xgboost.joblib"
         lgb_path = model_dir / "lightgbm_aux.joblib"
         missing = [path for path in (xgb_path, lgb_path) if not path.exists()]
@@ -101,12 +101,31 @@ def _cache_path(root: Path, node_count: int) -> Path:
     return _resolve_path(root, APP_CONFIG.paths.output_dir) / "realtime" / f"dgraph_account_prior_{node_count}.joblib"
 
 
+def _artifact_dir(root: Path, *parts: str) -> Path:
+    primary = _resolve_path(root, APP_CONFIG.paths.output_dir).joinpath(*parts)
+    mounted = root / "data" / "runtime-artifacts" / "output" / Path(*parts)
+    if primary.exists() or not mounted.exists():
+        return primary
+    return mounted
+
+
+def _existing_artifact_path(root: Path, primary: Path) -> Path:
+    if primary.exists():
+        return primary
+    try:
+        relative = primary.relative_to(_resolve_path(root, APP_CONFIG.paths.output_dir))
+    except ValueError:
+        return primary
+    mounted = root / "data" / "runtime-artifacts" / "output" / relative
+    return mounted if mounted.exists() else primary
+
+
 def _resolve_path(root: Path, path: Path) -> Path:
     return path if path.is_absolute() else root / path
 
 
 def _read_valid_auc(root: Path) -> float:
-    metrics_path = _resolve_path(root, APP_CONFIG.paths.output_dir) / "dgraph_fin" / "metrics" / "xgboost_metrics.json"
+    metrics_path = _artifact_dir(root, "dgraph_fin", "metrics") / "xgboost_metrics.json"
     if not metrics_path.exists():
         return 0.0
     data: dict[str, Any] = json.loads(metrics_path.read_text(encoding="utf-8"))

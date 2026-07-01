@@ -1,0 +1,31 @@
+{
+  "model_name": "xgboost_lightgbm_realtime_feature_blend",
+  "feature_names": [
+    "amount",
+    "edge_type",
+    "src_1m_count",
+    "src_5m_amount",
+    "src_10m_counterparty_count",
+    "device_account_count",
+    "ip_account_count",
+    "merchant_in_amount",
+    "src_out_degree",
+    "dst_in_degree",
+    "seconds_since_last_src_event",
+    "channel_switch_count",
+    "burst_score",
+    "graph_neighbor_count",
+    "graph_risky_neighbor_count",
+    "graph_component_size",
+    "historical_risk_score",
+    "account_age_days",
+    "recent_login_challenge_count",
+    "blacklist_hit_count",
+    "script_score"
+  ],
+  "train_size": 4000,
+  "valid_size": 1000,
+  "valid_auc": 0.9999899911922492,
+  "xgboost_weight": 0.75,
+  "lightgbm_weight": 0.25
+}
