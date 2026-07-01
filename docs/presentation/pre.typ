@@ -406,24 +406,3 @@
   #set text(fill: forest-main, weight: "semibold", size: 17pt)
   面向方向一的实时金融反诈识别系统
 ]
-
-#slide(title: [附页])[
-  #grid(
-    columns: (1fr, 1fr),
-    gutter: 20pt,
-    [
-      #insight-box(title: [系统边界])[
-        - 聚焦方向一欺诈交易智能识别
-        - 不展示参赛身份信息
-        - 核心内容聚焦数据、模型、系统和结果
-      ]
-    ],
-    [
-      #accent-box(title: [技术重点])[
-        - DGraph-Fin 识别链路
-        - 可信验证与反泄漏
-        - 可视化证据和工程闭环
-      ]
-    ],
-  )
-]
