@@ -33,6 +33,7 @@ const DEFAULT_DATA_SOURCES = [
     mode: "IEEE 交易回放",
   },
 ];
+const DEMO_BATCH_SIZE = 40;
 
 export function useGraphStream(intervalMs = 650) {
   const snapshot = ref(null);
@@ -51,7 +52,7 @@ export function useGraphStream(intervalMs = 650) {
   async function refresh({ force = false } = {}) {
     if (paused.value && !force) return;
     try {
-      snapshot.value = await fetchGraphStream({ batchSize: Math.max(1, Math.round(120 * speed.value)), view: graphView.value });
+      snapshot.value = await fetchGraphStream({ batchSize: Math.max(1, Math.round(DEMO_BATCH_SIZE * speed.value)), view: graphView.value });
       connected.value = true;
     } catch {
       connected.value = false;

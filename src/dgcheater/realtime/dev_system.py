@@ -13,6 +13,7 @@ from pathlib import Path
 import typer
 
 from .dgraph_prior import DGraphAccountPrior
+from .simulator import DEMO_EVENT_COUNT
 
 
 app = typer.Typer(no_args_is_help=False)
@@ -20,7 +21,7 @@ app = typer.Typer(no_args_is_help=False)
 
 @app.callback(invoke_without_command=True)
 def main(
-    event_count: int = 200_000,
+    event_count: int = DEMO_EVENT_COUNT,
     interval_ms: int = 80,
     api_port: int = 8060,
     infra_only: bool = False,

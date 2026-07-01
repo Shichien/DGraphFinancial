@@ -880,7 +880,11 @@
     }
 
     .risk-console-right-column {
-      grid-template-rows: minmax(360px, 1fr) minmax(300px, 0.82fr);
+      align-content: start;
+      grid-auto-rows: max-content;
+      overflow-y: auto;
+      padding-right: 4px;
+      overscroll-behavior: contain;
     }
 
     .risk-console-editor {
@@ -890,14 +894,15 @@
     }
 
     .risk-console-output {
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
       gap: 10px;
+      overflow: visible;
     }
 
     .risk-console-detail {
-      grid-template-rows: auto auto auto minmax(0, 0.72fr) minmax(0, 1fr);
+      grid-template-rows: auto auto;
       gap: 10px;
-      overflow: auto;
+      overflow: visible;
     }
 
     .risk-console-history {
@@ -1063,8 +1068,7 @@
       line-height: 1.35;
     }
 
-    .console-alias-list,
-    .console-feature-list {
+    .console-alias-list {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
@@ -1073,9 +1077,7 @@
       align-content: flex-start;
     }
 
-    .console-alias-list span,
-    .console-feature-list span,
-    .console-kv-grid span {
+    .console-alias-list span {
       min-width: 0;
       display: inline-flex;
       align-items: center;
@@ -1089,16 +1091,12 @@
       font-size: 0.72rem;
     }
 
-    .console-alias-list b,
-    .console-feature-list b,
-    .console-kv-grid b {
+    .console-alias-list b {
       color: var(--ink);
       white-space: nowrap;
     }
 
-    :root[data-theme="dark"] .console-alias-list b,
-    :root[data-theme="dark"] .console-feature-list b,
-    :root[data-theme="dark"] .console-kv-grid b {
+    :root[data-theme="dark"] .console-alias-list b {
       color: var(--white);
     }
 
@@ -1238,108 +1236,6 @@
       color: var(--white);
     }
 
-    .console-decision-card {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 7px;
-      padding: 9px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface-muted);
-      box-shadow: inset 4px 0 0 var(--level-color);
-    }
-
-    .console-decision-card div {
-      min-width: 0;
-      display: grid;
-      gap: 4px;
-    }
-
-    .console-decision-card span {
-      color: var(--muted);
-      font-size: 0.72rem;
-    }
-
-    .console-decision-card strong {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 0.9rem;
-    }
-
-    .console-kv-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    .console-kv-grid span {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      justify-content: initial;
-      gap: 8px;
-      border-radius: 10px;
-    }
-
-    .console-kv-grid span {
-      min-height: 30px;
-    }
-
-    .console-kv-grid span:not(.flow-path) {
-      overflow: hidden;
-    }
-
-    .console-kv-grid span > :last-child {
-      min-width: 0;
-      overflow: hidden;
-      text-align: right;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .console-breakdown-list {
-      min-height: 0;
-      display: grid;
-      align-content: start;
-      gap: 7px;
-      overflow: auto;
-    }
-
-    .console-breakdown-row {
-      display: grid;
-      grid-template-columns: minmax(130px, 0.5fr) minmax(0, 1fr) 70px;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 0.74rem;
-    }
-
-    .console-breakdown-row i {
-      height: 7px;
-      display: block;
-      border-radius: 999px;
-      background: var(--surface-track);
-      overflow: hidden;
-    }
-
-    .console-breakdown-row em {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--teal), var(--amber));
-    }
-
-    .console-breakdown-row b {
-      text-align: right;
-      color: var(--ink);
-      font-family: var(--latin-number);
-    }
-
-    :root[data-theme="dark"] .console-breakdown-row b {
-      color: var(--white);
-    }
-
     .console-history-list article {
       grid-template-columns: 1fr;
     }
@@ -1347,6 +1243,58 @@
     .console-history-list span {
       color: var(--muted);
       font-size: 0.72rem;
+    }
+
+    .console-simple-list,
+    .console-simple-section {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .console-simple-list div,
+    .console-simple-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-muted);
+      font-size: 0.78rem;
+    }
+
+    .console-simple-list dt,
+    .console-simple-row span {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .console-simple-list dd,
+    .console-simple-row b {
+      margin: 0;
+      min-width: 0;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+      text-align: left;
+      white-space: normal;
+    }
+
+    :root[data-theme="dark"] .console-simple-list dd,
+    :root[data-theme="dark"] .console-simple-row b {
+      color: var(--white);
+    }
+
+    .console-simple-section h3 {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
     }
 
     .architecture-page {
@@ -3989,8 +3937,6 @@
 
       .console-builder-head,
       .console-builder-row,
-      .console-decision-card,
-      .console-kv-grid,
       .console-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -4265,8 +4211,6 @@
       .risk-summary-grid,
       .console-builder-head,
       .console-builder-row,
-      .console-decision-card,
-      .console-kv-grid,
       .console-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }

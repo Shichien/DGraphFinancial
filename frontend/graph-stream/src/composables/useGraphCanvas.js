@@ -2,6 +2,8 @@ import { onBeforeUnmount, onMounted, reactive, unref, watch } from "vue";
 import { fetchNodeNeighborhood } from "../api/graphStream";
 import { formatScore } from "../utils/format";
 
+const NODE_CACHE_LIMIT = 260;
+
 const levelColor = { critical: "#c43b32", high: "#bc7a1b", medium: "#2e6d8f", low: "#1f7a62" };
 
 function nodeColor(node) {
@@ -194,21 +196,27 @@ export function useGraphCanvasWithOptions(canvasRef, snapshotRef, replayTokenRef
         if (!visibleIds.has(Number(nodeId))) graphState.nodes.delete(nodeId);
       });
     }
-    nodes.forEach((node, index) => {
+    nodes.forEach((node) => {
       const nodeId = Number(node.id);
       const existing = graphState.nodes.get(nodeId) || {};
       const cloud = ensureCloudPoint(node);
       const bornAt = existing.bornAt || now;
-      const drift = now * 0.00022 + index * 0.11;
-      const eventPulse = 1 + Math.sin(now * 0.0024 + nodeId * 0.17) * 0.006;
-      const animatedCloud = {
-        x: cloud.x * eventPulse + Math.sin(drift + node.riskScore * 2) * 0.036,
-        y: cloud.y + Math.cos(drift * 1.2) * 0.026,
-        z: cloud.z * eventPulse + Math.sin(drift * 0.8) * 0.034,
-      };
-      const projected = projectPoint(animatedCloud, width, height);
+      const projected = projectPoint(cloud, width, height);
       graphState.nodes.set(nodeId, { ...node, id: nodeId, ...projected, cloud, bornAt });
     });
+    evictOldestNodes(visibleIds);
+  }
+
+  function evictOldestNodes(visibleIds) {
+    const limit = Math.max(NODE_CACHE_LIMIT, visibleIds.size);
+    if (graphState.nodes.size <= limit) return;
+    const candidates = [...graphState.nodes.entries()]
+      .map(([nodeId, node]) => ({ nodeId: Number(nodeId), bornAt: Number(node.bornAt || 0), visible: visibleIds.has(Number(nodeId)) }))
+      .sort((a, b) => a.visible - b.visible || a.bornAt - b.bornAt || a.nodeId - b.nodeId);
+    for (const item of candidates) {
+      if (graphState.nodes.size <= limit) break;
+      graphState.nodes.delete(item.nodeId);
+    }
   }
 
   function focusedGraph(nodes, edges) {
@@ -397,7 +405,7 @@ export function useGraphCanvasWithOptions(canvasRef, snapshotRef, replayTokenRef
     graphState.neighborhood = null;
     if (shouldEmit && emitFocusChange) emitFocusChange(Number(node.id));
     try {
-      const neighborhood = await fetchNodeNeighborhood(node.id, { scope: "full", limit: 140 });
+      const neighborhood = await fetchNodeNeighborhood(node.id, { scope: "full", limit: 80 });
       if (graphState.focusNodeId !== Number(node.id)) return;
       if (neighborhood.available) {
         graphState.neighborhood = neighborhood;
@@ -548,22 +556,21 @@ export function useGraphCanvasWithOptions(canvasRef, snapshotRef, replayTokenRef
       const selectedIds = new Set((currentEvent?.relatedNodes || []).map((id) => Number(id)));
       const selectedNode = selectedIds.has(Number(node.id)) || Number(node.id) === Number(graphState.focusNodeId);
       const riskWeight = Math.max(0, Math.min(1, node.riskScore));
-      const age = Math.min(1, (animationClock - (point.bornAt || animationClock)) / 900);
-      const entryScale = 0.48 + age * 0.52;
-      const entryPulse = Math.max(0, 1 - (animationClock - (point.bornAt || animationClock)) / 1500);
+      const highRiskNode = node.riskLevel === "critical" || node.riskLevel === "high" || node.detectedFraud;
       const levelBoost = node.riskLevel === "critical" ? 1.55 : node.riskLevel === "high" ? 1.35 : node.riskLevel === "medium" ? 1.12 : 0.68;
       const baseRadius = 1.05 + Math.min(node.degree, 28) * 0.035 + Math.pow(riskWeight, 1.55) * 7.4;
-      const radius = baseRadius * levelBoost * Math.max(0.46, point.perspective * 1.56) * entryScale;
+      const radius = baseRadius * levelBoost * Math.max(0.46, point.perspective * 1.56);
       const nodeAlpha = Math.min(1, Math.max(0.12, point.alpha * (0.24 + riskWeight * 0.86)));
-      const shadowBlur = node.riskLevel === "critical" ? 30 : node.riskLevel === "high" ? 24 : node.riskLevel === "medium" ? 14 : 3;
+      const shadowBlur = node.riskLevel === "critical" ? 16 : node.riskLevel === "high" ? 12 : node.riskLevel === "medium" ? 7 : 2;
+      const entryPulse = highRiskNode ? Math.max(0, 1 - (animationClock - (point.bornAt || animationClock)) / 1500) : 0;
       if (entryPulse > 0) {
         ctx.beginPath();
-        ctx.globalAlpha = entryPulse * 0.72;
+        ctx.globalAlpha = entryPulse * 0.68;
         ctx.strokeStyle = color;
-        ctx.lineWidth = 1.5 + entryPulse * 2.2;
+        ctx.lineWidth = 1.4 + entryPulse * 1.8;
         ctx.shadowColor = color;
-        ctx.shadowBlur = 20 + entryPulse * 22;
-        ctx.arc(point.x, point.y, radius + 9 + (1 - entryPulse) * 22, 0, Math.PI * 2);
+        ctx.shadowBlur = 16 + entryPulse * 16;
+        ctx.arc(point.x, point.y, radius + 8 + (1 - entryPulse) * 18, 0, Math.PI * 2);
         ctx.stroke();
         ctx.globalAlpha = 1;
         ctx.shadowBlur = 0;

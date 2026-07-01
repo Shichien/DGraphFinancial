@@ -1,4 +1,4 @@
-export async function fetchGraphStream({ batchSize = 120, view = "window" } = {}) {
+export async function fetchGraphStream({ batchSize = 40, view = "window" } = {}) {
   const params = new URLSearchParams({ batch_size: String(batchSize), view });
   const response = await fetch(`/api/graph-stream?${params.toString()}`, { cache: "no-store" });
   if (!response.ok) {
@@ -36,7 +36,7 @@ export async function switchDataSource(source) {
   return response.json();
 }
 
-export async function fetchNodeNeighborhood(nodeId, { scope = "full", limit = 120 } = {}) {
+export async function fetchNodeNeighborhood(nodeId, { scope = "full", limit = 80 } = {}) {
   const params = new URLSearchParams({
     node_id: String(nodeId),
     scope,

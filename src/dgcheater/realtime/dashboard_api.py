@@ -21,7 +21,7 @@ from .metrics import RuntimeMetricsStore, derive_dashboard_metrics
 from .realtime_sinks import RedisRiskSink
 from .schemas import RiskDecision
 from .scoring import SCORE_WEIGHTS, FusionRiskScorer
-from .simulator import MultiSourceFraudSimulator, SimulatorConfig
+from .simulator import DEMO_EVENT_COUNT, MultiSourceFraudSimulator
 from .storage import RiskEventRepository
 
 
@@ -36,6 +36,13 @@ app.add_middleware(
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _FRONTEND_DIST = _REPO_ROOT / "frontend" / "graph-stream" / "dist"
+DEMO_BATCH_SIZE = 40
+GRAPH_WINDOW_EVENT_LIMIT = 80
+GRAPH_CUMULATIVE_EVENT_LIMIT = DEMO_EVENT_COUNT
+GRAPH_NODE_LIMIT = 240
+GRAPH_EDGE_LIMIT = 640
+GRAPH_RELATED_NODE_LIMIT = 16
+GRAPH_NEIGHBORHOOD_LIMIT = 80
 if _FRONTEND_DIST.exists():
     assets_dir = _FRONTEND_DIST / "assets"
     if assets_dir.exists():
@@ -51,6 +58,7 @@ class DemoRuntime:
     scorer: FusionRiskScorer = field(default_factory=FusionRiskScorer)
     decisions: list[RiskDecision] = field(default_factory=list)
     event_total: int = 0
+    event_limit: int = DEMO_EVENT_COUNT
     started_at: float = field(default_factory=time.time)
     last_advance_at: float = field(default_factory=time.time)
     scoring_latency_ms_avg: float = 0.0
@@ -79,8 +87,8 @@ class DemoRuntime:
             )
             self.decisions.append(decision)
         self.last_advance_at = time.time()
-        if len(self.decisions) > 5_000:
-            del self.decisions[: len(self.decisions) - 5_000]
+        if len(self.decisions) > self.event_limit:
+            del self.decisions[: len(self.decisions) - self.event_limit]
 
     def reset(self, source_key: str | None = None) -> None:
         if source_key is not None:
@@ -148,7 +156,7 @@ def dashboard_index():
 
 @app.get("/api/graph-stream")
 def graph_stream(
-    batch_size: int = Query(default=120, ge=1, le=5000),
+    batch_size: int = Query(default=DEMO_BATCH_SIZE, ge=1, le=DEMO_EVENT_COUNT),
     view: str = Query(default="window", pattern="^(window|cumulative)$"),
 ) -> dict[str, Any]:
     demo_runtime = _runtime()
@@ -249,7 +257,7 @@ def run_risk_console(payload: dict[str, Any]) -> dict[str, Any]:
 def graph_node_neighborhood(
     node_id: int,
     scope: str = "full",
-    limit: int = Query(default=120, ge=1, le=500),
+    limit: int = Query(default=GRAPH_NEIGHBORHOOD_LIMIT, ge=1, le=GRAPH_NODE_LIMIT),
 ) -> dict[str, Any]:
     repository = _repository()
     if repository is not None:
@@ -360,7 +368,7 @@ def graph_node_features(node_id: int) -> dict[str, Any]:
 
 
 @app.get("/graph/node/{node_id}/neighbors")
-def graph_node_neighbors(node_id: int, limit: int = Query(default=120, ge=1, le=500)) -> dict[str, Any]:
+def graph_node_neighbors(node_id: int, limit: int = Query(default=GRAPH_NEIGHBORHOOD_LIMIT, ge=1, le=GRAPH_NODE_LIMIT)) -> dict[str, Any]:
     return graph_node_neighborhood(node_id=node_id, scope="full", limit=limit)
 
 
@@ -422,9 +430,10 @@ def _snapshot_from_database(
     source: RealtimeDataSource | None = None,
     view: str = "window",
 ) -> dict[str, Any]:
-    graph_limit = 1200 if view == "cumulative" else 80
+    graph_limit = _graph_event_limit(view)
     raw = repository.dashboard_snapshot(limit=graph_limit)
     events = [_event_from_db(row) for row in raw["events"]]
+    level_counts = _level_counts_from_events(events)
     nodes = _nodes_from_events(events)
     edges = _edges_from_events(events)
     fraud_scripts = _fraud_scripts_from_rows(raw.get("fraud_scripts", []), events)
@@ -448,9 +457,9 @@ def _snapshot_from_database(
             "sourceKey": source.key if source is not None else "kafka_live",
             "sourceDescription": source.description if source is not None else "读取 Kafka、Flink、评分服务写入的风险事件库。",
             "mode": source.mode if source is not None else "Kafka 实时链路",
-            "position": raw["total_events"],
-            "totalEvents": raw["total_events"],
-            "progress": 1.0,
+            "position": min(raw["total_events"], DEMO_EVENT_COUNT),
+            "totalEvents": min(max(raw["total_events"], len(events)), DEMO_EVENT_COUNT),
+            "progress": min(raw["total_events"] / DEMO_EVENT_COUNT, 1.0) if raw["total_events"] else 0.0,
             "eventsPerSecond": 0.0,
             "currentTimestamp": events[0]["timestamp"] if events else 0,
             "windowSize": len(events),
@@ -458,7 +467,7 @@ def _snapshot_from_database(
             "graphWindowLimit": graph_limit,
             "complete": False,
         },
-        "summary": _summary(raw["risk_level_counts"], raw["total_events"], len(nodes), len(edges), len(events)),
+        "summary": _summary(level_counts, len(events), len(nodes), len(edges), len(events)),
         "topNodes": top_nodes,
         "recentEvents": events,
         "lastEvent": events[0] if events else None,
@@ -471,7 +480,7 @@ def _snapshot_from_database(
 
 
 def _snapshot_from_runtime(source: DemoRuntime, view: str = "window") -> dict[str, Any]:
-    graph_limit = 1200 if view == "cumulative" else 80
+    graph_limit = _graph_event_limit(view)
     recent = source.decisions[-graph_limit:]
     level_counts: dict[str, int] = {}
     for decision in source.decisions:
@@ -495,9 +504,9 @@ def _snapshot_from_runtime(source: DemoRuntime, view: str = "window") -> dict[st
             "sourceKey": source.source.key,
             "sourceDescription": source.source.description,
             "mode": source.source.mode,
-            "position": source.event_total,
-            "totalEvents": source.event_total,
-            "progress": 1.0,
+            "position": min(source.event_total, source.event_limit),
+            "totalEvents": source.event_limit,
+            "progress": min(source.event_total / source.event_limit, 1.0) if source.event_limit else 1.0,
             "eventsPerSecond": 0.0,
             "currentTimestamp": events[0]["timestamp"] if events else 0,
             "windowSize": len(events),
@@ -514,6 +523,18 @@ def _snapshot_from_runtime(source: DemoRuntime, view: str = "window") -> dict[st
         "fraudScripts": fraud_scripts,
         "streamMetrics": _metrics_from_runtime(source),
     }
+
+
+def _graph_event_limit(view: str) -> int:
+    return GRAPH_CUMULATIVE_EVENT_LIMIT if view == "cumulative" else GRAPH_WINDOW_EVENT_LIMIT
+
+
+def _level_counts_from_events(events: list[dict[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for event in events:
+        level = str(event.get("riskLevel") or "low")
+        counts[level] = counts.get(level, 0) + 1
+    return counts
 
 
 def _summary(level_counts: dict[str, int], total: int, node_count: int, edge_count: int, window_count: int) -> dict[str, Any]:
@@ -577,6 +598,7 @@ def _metrics_from_runtime(source: DemoRuntime) -> dict[str, Any]:
 def _event_from_decision(decision: RiskDecision) -> dict[str, Any]:
     amount = float(decision.evidence.get("amount", 0.0))
     channel = str(decision.evidence.get("source_channel", "unknown"))
+    related_nodes = decision.related_nodes[:GRAPH_RELATED_NODE_LIMIT]
     return {
         "eventId": decision.event_id,
         "timestamp": decision.timestamp,
@@ -601,7 +623,7 @@ def _event_from_decision(decision: RiskDecision) -> dict[str, Any]:
         "reasonCodes": decision.reason_codes,
         "evidence": decision.evidence,
         "communityId": decision.community_id,
-        "relatedNodes": decision.related_nodes,
+        "relatedNodes": related_nodes,
         "isFraudEdge": 1 if decision.risk_level in {"critical", "high"} else 0,
     }
 
@@ -618,12 +640,16 @@ def _event_from_db(row: dict[str, Any]) -> dict[str, Any]:
     src_account = int(row["src_account"])
     dst_account = int(row["dst_account"])
     reason_codes = [str(item) for item in row.get("reason_codes", [])]
-    related_edges = row.get("related_edges", [])
+    related_edges = (row.get("related_edges", []) or [])[:GRAPH_RELATED_NODE_LIMIT]
     related_nodes = [int(item) for item in row.get("related_nodes", [])]
     if not related_nodes:
         related_nodes = [src_account, dst_account]
     else:
-        related_nodes = sorted(set([src_account, dst_account, *related_nodes]))
+        related_nodes = [
+            src_account,
+            dst_account,
+            *sorted(set(related_nodes) - {src_account, dst_account}),
+        ][:GRAPH_RELATED_NODE_LIMIT]
     return {
         "eventId": int(row["event_id"]),
         "timestamp": int(row["event_time"]),
@@ -814,14 +840,25 @@ def _nodes_from_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for node_id, neighbors in degree.items():
         if node_id in nodes:
             nodes[node_id]["degree"] = len(neighbors)
-    return sorted(nodes.values(), key=lambda item: item["riskScore"], reverse=True)[:360]
+    return sorted(nodes.values(), key=lambda item: item["riskScore"], reverse=True)[:GRAPH_NODE_LIMIT]
 
 
 def _edges_from_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     edges: list[dict[str, Any]] = []
     seen: set[str] = set()
+
+    def append_edge(edge: dict[str, Any]) -> bool:
+        edge_id = str(edge["id"])
+        if edge_id in seen:
+            return True
+        if len(edges) >= GRAPH_EDGE_LIMIT:
+            return False
+        seen.add(edge_id)
+        edges.append(edge)
+        return len(edges) < GRAPH_EDGE_LIMIT
+
     for event in events:
-        base_edge = {
+        if not append_edge({
             "id": f"rt-{event['eventId']}",
             "source": int(event["srcNode"]),
             "target": int(event["dstNode"]),
@@ -831,42 +868,17 @@ def _edges_from_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "edgeType": int(event.get("edgeType", 1)),
             "channel": event.get("channel", "unknown"),
             "sourceScope": "runtime",
-        }
-        edges.append(base_edge)
-        seen.add(str(base_edge["id"]))
+        }):
+            return edges
+
+    for event in events:
         related_edges = event.get("relatedEdges") or []
         if related_edges:
-            for index, relation in enumerate(related_edges):
+            for index, relation in enumerate(related_edges[:GRAPH_RELATED_NODE_LIMIT]):
                 source = int(relation.get("src_account", event["srcNode"]))
                 target = int(relation.get("dst_account", event["dstNode"]))
                 edge_id = f"rel-{event['eventId']}-{source}-{target}-{index}"
-                if edge_id in seen:
-                    continue
-                seen.add(edge_id)
-                edges.append(
-                    {
-                        "id": edge_id,
-                        "source": source,
-                        "target": target,
-                        "timestamp": int(event["timestamp"]),
-                        "riskLevel": event["riskLevel"],
-                        "riskScore": float(event["riskScore"]),
-                        "edgeType": int(event.get("edgeType", 1)),
-                        "channel": relation.get("relation_type", "related_node"),
-                        "sourceScope": "related",
-                    }
-                )
-            continue
-        for target in sorted(set(int(item) for item in event.get("relatedNodes", []))):
-            source = int(event["srcNode"])
-            if target in {source, int(event["dstNode"])}:
-                continue
-            edge_id = f"rel-{event['eventId']}-{source}-{target}"
-            if edge_id in seen:
-                continue
-            seen.add(edge_id)
-            edges.append(
-                {
+                if not append_edge({
                     "id": edge_id,
                     "source": source,
                     "target": target,
@@ -874,10 +886,28 @@ def _edges_from_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     "riskLevel": event["riskLevel"],
                     "riskScore": float(event["riskScore"]),
                     "edgeType": int(event.get("edgeType", 1)),
-                    "channel": "related_node",
+                    "channel": relation.get("relation_type", "related_node"),
                     "sourceScope": "related",
-                }
-            )
+                }):
+                    return edges
+            continue
+        for target in sorted(set(int(item) for item in event.get("relatedNodes", [])))[:GRAPH_RELATED_NODE_LIMIT]:
+            source = int(event["srcNode"])
+            if target in {source, int(event["dstNode"])}:
+                continue
+            edge_id = f"rel-{event['eventId']}-{source}-{target}"
+            if not append_edge({
+                "id": edge_id,
+                "source": source,
+                "target": target,
+                "timestamp": int(event["timestamp"]),
+                "riskLevel": event["riskLevel"],
+                "riskScore": float(event["riskScore"]),
+                "edgeType": int(event.get("edgeType", 1)),
+                "channel": "related_node",
+                "sourceScope": "related",
+            }):
+                return edges
     return edges
 
 

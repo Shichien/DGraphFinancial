@@ -14,7 +14,7 @@ from .metrics import RuntimeMetricsStore
 from .realtime_sinks import Neo4jGraphSink, RealtimeSinkBundle, RedisRiskSink
 from .schemas import AccountProfileEvent, BlacklistEvent, DeviceLoginEvent, RealtimeFeatures, RiskDecision, TransactionEvent
 from .scoring import FusionRiskScorer
-from .simulator import MultiSourceFraudSimulator, SimulatorConfig
+from .simulator import MultiSourceFraudSimulator, demo_simulator_config
 from .storage import RiskEventRepository
 
 
@@ -97,7 +97,7 @@ def produce_simulated_transactions(
     timestamp_start: int = 0,
 ) -> None:
     simulator = MultiSourceFraudSimulator(
-        SimulatorConfig(seed=seed, event_id_start=event_id_start, timestamp_start=timestamp_start)
+        demo_simulator_config(seed=seed, event_id_start=event_id_start, timestamp_start=timestamp_start)
     )
     producer = KafkaJsonProducer(bootstrap_servers)
     metrics = RuntimeMetricsStore()

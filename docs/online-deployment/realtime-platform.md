@@ -70,7 +70,7 @@ uv run dev-system --infra-only
 ```powershell
 uv run dgcheater-realtime feature-worker
 uv run dgcheater-realtime scoring-worker
-uv run dgcheater-realtime produce --event-count 20000 --interval-ms 80
+uv run dgcheater-realtime produce --event-count 400 --interval-ms 80
 ```
 
 其中 `feature-worker` 会同时订阅 `transactions.raw`、`accounts.raw`、`devices.raw` 和 `blacklist.raw`，按 `event_id` 汇合必要来源后再把多源状态融合成 `features.realtime`。仿真生产器会先写账户画像、设备登录、黑名单和延迟标签，再写对应交易；消费者侧仍会做显式汇合，因此不依赖 Kafka 多主题之间的到达顺序。
@@ -80,7 +80,7 @@ uv run dgcheater-realtime produce --event-count 20000 --interval-ms 80
 ```powershell
 uv run dgcheater-realtime submit-flink
 uv run dgcheater-realtime scoring-worker
-uv run dgcheater-realtime produce --event-count 20000 --interval-ms 80
+uv run dgcheater-realtime produce --event-count 400 --interval-ms 80
 ```
 
 验收 Flink 真实链路时，应先停止本地 `feature-worker`，只保留 Flink 作业和 `scoring-worker`。这样 `features.realtime` 的来源才是 Flink，不会混入 Python 特征消费者。
