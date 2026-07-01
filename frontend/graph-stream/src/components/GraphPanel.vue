@@ -59,8 +59,6 @@ const { graphState, clearFocus } = useGraphCanvas(canvasRef, snapshotRef, replay
 
 const filterOptions = [
   { id: "all" },
-  { id: "high" },
-  { id: "community" },
   { id: "device_reuse" },
   { id: "ip_cluster" },
   { id: "merchant_laundering" },

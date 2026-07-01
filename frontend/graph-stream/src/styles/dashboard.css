@@ -732,12 +732,12 @@
     .case-side-stack {
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(300px, 1fr) minmax(300px, 1fr);
+      grid-template-rows: minmax(260px, 0.82fr) minmax(360px, 1.18fr);
       gap: 10px;
       overflow: hidden;
     }
 
-    .case-side-stack .case-audit-panel {
+    .case-side-stack .case-workbench {
       min-height: 0;
       overflow: auto;
     }
@@ -829,6 +829,15 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
+    }
+
+    .review-page .case-workbench {
+      grid-template-rows: minmax(310px, auto) minmax(0, 1fr);
+    }
+
+    .review-page .case-current-panel {
+      min-height: 310px;
+      overflow: visible;
     }
 
     .review-side {
@@ -2882,11 +2891,27 @@
       overflow: hidden;
     }
 
+    .case-side-stack .case-workbench {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      align-content: start;
+      padding-right: 4px;
+    }
+
     .case-queue-panel {
       grid-row: 1 / -1;
     }
 
+    .case-side-stack .case-queue-panel {
+      display: none;
+    }
+
     .case-current-panel {
+      grid-row: 1;
+    }
+
+    .case-side-stack .case-current-panel {
+      grid-column: 1;
       grid-row: 1;
     }
 
@@ -2895,14 +2920,30 @@
       grid-row: 2;
     }
 
+    .case-side-stack .case-history-panel {
+      display: none;
+    }
+
     .case-audit-trace-panel {
       grid-column: 3;
       grid-row: 1 / -1;
     }
 
+    .case-side-stack .case-audit-trace-panel {
+      display: none;
+    }
+
     .case-history-panel,
     .case-audit-trace-panel {
       min-height: 0;
+    }
+
+    .case-queue-panel,
+    .case-current-panel,
+    .case-history-panel,
+    .case-audit-trace-panel {
+      min-height: 0;
+      overflow: hidden;
     }
 
     .case-queue-list {
@@ -2975,6 +3016,10 @@
       gap: 6px;
     }
 
+    .case-side-stack .current-case-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .current-case-grid span {
       display: grid;
       gap: 3px;
@@ -3033,9 +3078,18 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .case-side-stack .case-actions.large {
+      gap: 6px;
+    }
+
     .case-actions.large button {
       min-height: 32px;
       font-size: 0.86rem;
+    }
+
+    .case-side-stack .case-actions.large button {
+      min-height: 28px;
+      font-size: 0.78rem;
     }
 
     .case-write-error {
@@ -3403,7 +3457,7 @@
     .case-detail-panel,
     .case-queue-list,
     .alert-table-wrap,
-    .case-side-stack .case-audit-panel {
+    .case-side-stack .case-workbench {
       overflow: auto;
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -3420,7 +3474,7 @@
     .case-detail-panel::-webkit-scrollbar,
     .case-queue-list::-webkit-scrollbar,
     .alert-table-wrap::-webkit-scrollbar,
-    .case-side-stack .case-audit-panel::-webkit-scrollbar {
+    .case-side-stack .case-workbench::-webkit-scrollbar {
       width: 8px;
       height: 8px;
       background: var(--scrollbar-track);
@@ -3437,7 +3491,7 @@
     .case-detail-panel::-webkit-scrollbar-track,
     .case-queue-list::-webkit-scrollbar-track,
     .alert-table-wrap::-webkit-scrollbar-track,
-    .case-side-stack .case-audit-panel::-webkit-scrollbar-track {
+    .case-side-stack .case-workbench::-webkit-scrollbar-track {
       border-radius: 999px;
       background: var(--scrollbar-track);
     }
@@ -3453,7 +3507,7 @@
     .case-detail-panel::-webkit-scrollbar-thumb,
     .case-queue-list::-webkit-scrollbar-thumb,
     .alert-table-wrap::-webkit-scrollbar-thumb,
-    .case-side-stack .case-audit-panel::-webkit-scrollbar-thumb {
+    .case-side-stack .case-workbench::-webkit-scrollbar-thumb {
       border: 2px solid var(--scrollbar-track);
       border-radius: 999px;
       background: var(--scrollbar-thumb);
@@ -3471,7 +3525,7 @@
     .case-detail-panel::-webkit-scrollbar-thumb:hover,
     .case-queue-list::-webkit-scrollbar-thumb:hover,
     .alert-table-wrap::-webkit-scrollbar-thumb:hover,
-    .case-side-stack .case-audit-panel::-webkit-scrollbar-thumb:hover {
+    .case-side-stack .case-workbench::-webkit-scrollbar-thumb:hover {
       background: var(--scrollbar-thumb-hover);
       background-clip: padding-box;
     }
@@ -4004,7 +4058,7 @@
       .script-list,
       .community-list,
       .case-queue-list,
-      .case-side-stack .case-audit-panel {
+      .case-side-stack .case-workbench {
         max-height: none;
         overflow: visible;
       }
