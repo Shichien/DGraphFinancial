@@ -219,7 +219,7 @@ $ S = 0.45 P_"DGraph" + 0.30 P_"behavior" + 0.15 P_"community" + 0.10 P_"rule" $
 系统将新增仿真欺诈样本、延迟标签和人工复核结果作为模型迭代入口。`labels.delayed` 模拟金融业务中交易发生后才确认欺诈的情况，`case_actions` 记录人工确认欺诈、人工冻结或误报放行等复核结果，`risk_audit_logs` 保留每次风险判定和处置轨迹。
 
 #figure(
-  image("figures/online-learning-loop.svg", width: 100%),
+  image("figures/online-learning-loop.svg", width: 80%),
   caption: [自适应学习与模型迭代闭环：延迟标签和人工复核结果回流到训练、影子评估、版本切换和回滚过程。],
 ) <online-learning-loop>
 
@@ -234,7 +234,7 @@ $ S = 0.45 P_"DGraph" + 0.30 P_"behavior" + 0.15 P_"community" + 0.10 P_"rule" $
 动态图状态服务输出一跳邻居、二跳组件、风险邻居数、团伙编号和相关节点列表。一跳邻居表达当前账户直接发生交易或共享设备、IP、商户的关联实体；二跳组件进一步扩展局部团伙结构；风险邻居数衡量邻域内已被判定为高危或严重风险的节点数量；团伙编号根据连通分量或社区结构生成，并随相关节点列表写入风险事件，供人工复核时追溯具体对象。
 
 #figure(
-  image("figures/graph-tracing-explainability.svg", width: 100%),
+  image("figures/graph-tracing-explainability.svg", width: 80%),
   caption: [图分析溯源与可解释输出：账户、设备、IP、商户和相关账户共同构成异构团伙证据。],
 ) <graph-tracing>
 
@@ -286,7 +286,7 @@ DGraph-Fin 当前训练集规模为 937584，验证集规模为 104177，训练�
 性能测试从模型推理、流处理和业务闭环三层展开。模型推理层统计单笔特征输入后的评分耗时、P95 和 P99 延迟，用于验证模型服务是否满足在线判定要求；流处理层统计 Kafka 写入吞吐、Flink 特征输出吞吐、Flink 估计延迟、checkpoint 耗时和消息积压，用于验证高并发交易流下是否能稳定产出 `features.realtime`；业务闭环层统计风险事件入库耗时、Redis 榜单刷新耗时、Neo4j 关系写入耗时和大屏 API 响应时间，用于验证告警、图谱和复核状态是否来自真实链路。
 
 #figure(
-  image("figures/performance-test-plan.svg", width: 100%),
+  image("figures/performance-test-plan.svg", width: 80%),
   caption: [性能测试方案与观测指标：从模型推理、流处理到业务闭环分层评估系统实时性和稳定性。],
 ) <performance-plan>
 
@@ -299,7 +299,7 @@ DGraph-Fin 当前训练集规模为 937584，验证集规模为 104177，训练�
 项目只使用公开匿名数据和仿真字段，不接触真实姓名、证件号、手机号、银行卡号等个人敏感信息。设备、IP 和商户字段均为仿真标识，用于表达风险模式，不指向真实个人或机构。
 
 #figure(
-  image("figures/hybrid-cloud-security.svg", width: 100%),
+  image("figures/hybrid-cloud-security.svg", width: 80%),
   caption: [混合云部署与全生命周期安全边界：云侧承接弹性流处理，私有网络保存风险事件、图谱和审计状态。],
 ) <hybrid-security>
 
