@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#f7f8f5"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d7e9ff"/>
+      <stop offset="1" stop-color="#b7d4f6"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dff3e7"/>
+      <stop offset="1" stop-color="#bde3c9"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe8cc"/>
+      <stop offset="1" stop-color="#f9c98e"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eadffc"/>
+      <stop offset="1" stop-color="#d1c0f2"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#18324a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#31475e"/>
+    </marker>
+    <marker id="arrow-soft" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#6d7f90"/>
+    </marker>
+    <style>
+      .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:34px;font-weight:700;fill:#17212b}
+      .subtitle{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:20px;fill:#5f6b78}
+      .lane{fill:#ffffff;stroke:#dbe3ea;stroke-width:2}
+      .lane-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:24px;font-weight:700;fill:#263544}
+      .node-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:21px;font-weight:700;fill:#1f2d3a}
+      .node-text{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:17px;fill:#35475a}
+      .small{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:16px;fill:#667482}
+      .caption{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:18px;fill:#485968}
+      .pipe{fill:none;stroke:#31475e;stroke-width:4;marker-end:url(#arrow)}
+      .return{fill:none;stroke:#6d7f90;stroke-width:3;stroke-dasharray:10 8;marker-end:url(#arrow-soft)}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <text x="80" y="72" class="title">智鉴流盾实时金融反诈平台图形摘要</text>
+  <text x="82" y="108" class="subtitle">continuous transaction stream · stateful features · explainable risk decision · graph tracing · audit loop</text>
+
+  <rect x="62" y="150" width="1450" height="600" rx="28" class="lane" filter="url(#shadow)"/>
+  <line x1="430" y1="150" x2="430" y2="750" stroke="#e3e9ef" stroke-width="2"/>
+  <line x1="800" y1="150" x2="800" y2="750" stroke="#e3e9ef" stroke-width="2"/>
+  <line x1="1168" y1="150" x2="1168" y2="750" stroke="#e3e9ef" stroke-width="2"/>
+
+  <text x="172" y="196" class="lane-title">多源仿真环境</text>
+  <text x="535" y="196" class="lane-title">流式特征计算</text>
+  <text x="895" y="196" class="lane-title">融合识别决策</text>
+  <text x="1282" y="196" class="lane-title">业务闭环输出</text>
+
+  <g filter="url(#shadow)">
+    <rect x="115" y="245" width="250" height="110" rx="18" fill="url(#blue)" stroke="#91b9e9"/>
+    <text x="145" y="285" class="node-title">仿真交易流</text>
+    <text x="145" y="318" class="node-text">转账、支付、收单</text>
+    <text x="145" y="344" class="node-text">设备、IP、黑名单</text>
+
+    <rect x="115" y="410" width="250" height="110" rx="18" fill="#ffffff" stroke="#b8c9dc"/>
+    <text x="145" y="450" class="node-title">欺诈剧本注入</text>
+    <text x="145" y="483" class="node-text">循环转账、设备复用</text>
+    <text x="145" y="509" class="node-text">突发交易、商户洗钱</text>
+
+    <rect x="115" y="575" width="250" height="92" rx="18" fill="#ffffff" stroke="#b8c9dc"/>
+    <text x="145" y="615" class="node-title">延迟标签</text>
+    <text x="145" y="648" class="node-text">复核样本与迭代信号</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="485" y="245" width="255" height="110" rx="18" fill="url(#green)" stroke="#93c9a5"/>
+    <text x="515" y="285" class="node-title">Kafka 多主题</text>
+    <text x="515" y="318" class="node-text">raw、cleaned、features</text>
+    <text x="515" y="344" class="node-text">risk.scored、alerts</text>
+
+    <rect x="485" y="410" width="255" height="110" rx="18" fill="#ffffff" stroke="#b7d0bd"/>
+    <text x="515" y="450" class="node-title">Flink 状态作业</text>
+    <text x="515" y="483" class="node-text">账户、设备、IP、商户</text>
+    <text x="515" y="509" class="node-text">窗口统计与多源汇合</text>
+
+    <rect x="485" y="575" width="255" height="92" rx="18" fill="#ffffff" stroke="#b7d0bd"/>
+    <text x="515" y="615" class="node-title">动态图状态</text>
+    <text x="515" y="648" class="node-text">一跳、二跳、团伙编号</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="855" y="245" width="255" height="110" rx="18" fill="url(#orange)" stroke="#e8af68"/>
+    <text x="885" y="285" class="node-title">DGraph-Fin 先验</text>
+    <text x="885" y="318" class="node-text">离线图特征模型</text>
+    <text x="885" y="344" class="node-text">XGBoost 与 LightGBM</text>
+
+    <rect x="855" y="410" width="255" height="110" rx="18" fill="#ffffff" stroke="#e8c190"/>
+    <text x="885" y="450" class="node-title">实时风险融合</text>
+    <text x="885" y="483" class="node-text">行为、图团伙、规则</text>
+    <text x="885" y="509" class="node-text">低危至严重四档</text>
+
+    <rect x="855" y="575" width="255" height="92" rx="18" fill="#ffffff" stroke="#e8c190"/>
+    <text x="885" y="615" class="node-title">解释证据</text>
+    <text x="885" y="648" class="node-text">原因码、相关节点、边</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1225" y="245" width="250" height="110" rx="18" fill="url(#purple)" stroke="#bca9df"/>
+    <text x="1255" y="285" class="node-title">风险事件库</text>
+    <text x="1255" y="318" class="node-text">PostgreSQL、Redis</text>
+    <text x="1255" y="344" class="node-text">Neo4j 异构关系</text>
+
+    <rect x="1225" y="410" width="250" height="110" rx="18" fill="#ffffff" stroke="#c9bddf"/>
+    <text x="1255" y="450" class="node-title">三维风险大屏</text>
+    <text x="1255" y="483" class="node-text">告警、评分、图追溯</text>
+    <text x="1255" y="509" class="node-text">实时吞吐与延迟</text>
+
+    <rect x="1225" y="575" width="250" height="92" rx="18" fill="#ffffff" stroke="#c9bddf"/>
+    <text x="1255" y="615" class="node-title">人工复核审计</text>
+    <text x="1255" y="648" class="node-text">处置动作与留痕</text>
+  </g>
+
+  <path class="pipe" d="M365 300 C410 300 435 300 485 300"/>
+  <path class="pipe" d="M740 300 C790 300 805 300 855 300"/>
+  <path class="pipe" d="M1110 300 C1160 300 1175 300 1225 300"/>
+  <path class="pipe" d="M365 465 C410 465 435 465 485 465"/>
+  <path class="pipe" d="M740 465 C790 465 805 465 855 465"/>
+  <path class="pipe" d="M1110 465 C1160 465 1175 465 1225 465"/>
+  <path class="pipe" d="M740 620 C790 620 805 620 855 620"/>
+  <path class="pipe" d="M1110 620 C1160 620 1175 620 1225 620"/>
+
+  <path class="return" d="M1350 675 C1315 775 430 805 260 715 C232 700 214 684 202 664"/>
+  <rect x="335" y="802" width="930" height="38" rx="15" fill="#ffffff" stroke="#d7e1e8" stroke-width="1.5" opacity="0.94"/>
+  <text x="800" y="827" text-anchor="middle" class="caption">复核结论与延迟标签回流，驱动样本沉淀、阈值校准、离线再训练和模型版本迭代</text>
+
+  <g>
+    <circle cx="410" cy="868" r="8" fill="#3f7fbd"/>
+    <text x="428" y="875" class="small">蓝色：数据输入</text>
+    <circle cx="600" cy="868" r="8" fill="#64a878"/>
+    <text x="618" y="875" class="small">绿色：实时计算</text>
+    <circle cx="795" cy="868" r="8" fill="#e1a35a"/>
+    <text x="813" y="875" class="small">橙色：模型决策</text>
+    <circle cx="995" cy="868" r="8" fill="#9a7bd0"/>
+    <text x="1013" y="875" class="small">紫色：业务闭环</text>
+  </g>
+</svg>

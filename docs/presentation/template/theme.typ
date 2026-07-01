@@ -1,21 +1,14 @@
 #import "@preview/touying:0.6.1": *
 #import themes.stargazer: *
 
-#let forest-deep = rgb("#0d3b2e")
-#let forest-main = rgb("#1b5e20")
-#let forest-soft = rgb("#e8f5e9")
-#let amber = rgb("#f6c453")
+#let forest-deep = rgb("#003300")
+#let forest-main = rgb("#1B5E20")
+#let forest-soft = rgb("#E8F5E9")
+#let amber = rgb("#FFD54F")
 #let slate = rgb("#263238")
-#let paper = rgb("#fafaf8")
+#let paper = rgb("#FAFAFA")
 
-#let logo-badge = box(
-  fill: forest-main,
-  radius: 10pt,
-  inset: (x: 10pt, y: 6pt),
-)[
-  #set text(fill: white, weight: "bold", size: 11pt)
-  DG
-]
+#let logo-badge = image("../assets/raicom-logo.png", height: 20pt)
 
 #let deck-theme(meta) = stargazer-theme.with(
   aspect-ratio: "16-9",
@@ -38,5 +31,5 @@
     neutral-lightest: paper,
     neutral-darkest: slate,
   ),
-  alpha: 42%,
+  alpha: 45%,
 )

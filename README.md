@@ -1,4 +1,4 @@
-# DGCheater
+# 智鉴流盾
 
 基于 DGraphFin 数据集的金融反诈赛道一项目。当前主方案采用统一图结构特征工程、无泄漏邻域风险增强与 `XGBoost + LightGBM` 轻量融合，兼顾可复现性、工程落地与比赛展示。
 
@@ -12,7 +12,6 @@
 ## 项目结构
 
 - `src/dgcheater/` 核心代码
-- `justfile` 常用执行入口
 - `docs/report/` Typst 报告
 - `docs/presentation/` Typst 答辩稿
 - `docs/` 多数据集接入说明
@@ -41,17 +40,21 @@ uv run dgcheater-train train --dataset dgraph_fin --data-path data/DGraphFin/DGr
 uv run dgcheater-train train --dataset dgraph_fin2 --data-path data/DGraphFin/DGraphFin2
 uv run dgcheater-train train --dataset ieee_cis --data-path data/ieee-fraud-detection
 uv run dgcheater-train train --dataset elliptic_pp --data-path data/elliptic-plus-plus
-uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DGraphFin/DGraphFin1 --event-count 5000 --trace-top-k 20
 uv run dgcheater-train report-metrics
-uv run dgcheater-train build-dashboard
 typst compile docs/report/competition-report.typ output/competition-report.pdf
 ```
 
-前端展示面板会输出到：
+实时大屏可以单独启动：
 
-`output\dashboard\index.html`
+```powershell
+uv run dgcheater-realtime-api --host 127.0.0.1 --port 8060
+```
 
-这是单文件页面，直接打开即可用于答辩展示，不需要额外起本地服务。面板现在包含数据资产、仿真欺诈剧本、风险事件调查控制台、模型版本、阈值策略、案件处置、审计记录和一跳溯源视图。
+完整实时链路可以通过以下命令启动：
+
+```powershell
+uv run dev-system
+```
 
 ## 当前结论
 
@@ -59,8 +62,8 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 - 官方 `DGraph-Fin2` 数据上，去除会泄漏目标的节点时间标签后，当前可信验证 AUC 约为 `0.8279`
 - `IEEE-CIS` 数据上，改成基于 `TransactionDT` 的时间切分后，当前可信验证 AUC 约为 `0.9146`
 - `EllipticPlusPlus` 在修正实现口径后，当前严格复核结果约为 `0.9266`
-- 已新增单机交易流回放与在线评分原型，可输出风险等级、风控动作、团伙溯源摘要和性能实测报告
-- 已新增调查控制台展示，可基于流式风险事件查看案件状态、复核结论、审计记录和溯源结构
+- 已形成多源仿真、实时评分、告警队列、团伙关系图、人工复核和审计留痕闭环
+- 已新增 Vue 实时大屏，可查看交易监测、风险评分、告警队列、团伙追溯和复核结果
 
 这些结果均来自当前已接入公开数据和本地实验产物。
 
@@ -88,62 +91,6 @@ typst compile docs/report/competition-report.typ output/competition-report.pdf
 需要注意的是，`DGraph-Fin2` 的节点时间标签在当前二分类任务设定下会直接暴露正类身份，因此本项目默认不会把节点时间标签本身作为训练特征，以避免得到虚高且不可用的离线分数。
 
 `amlsim_sample` 已经完成接入并跑通训练链路，但由于样例过小，验证折可能只含单一类别，因此当前更适合作为 AML 仿真样例与工程接入验证，而不是正式 AUC 对比集。
-
-## 流式识别原型
-
-当前已补齐一个单机回放原型，用于覆盖赛题中的实时识别、动态风险输出、团伙溯源和性能测试要求。默认基于本地 `DGraph-Fin` 交易边按时间戳抽样生成事件流，并补充渠道、金额和设备指纹模拟字段。
-
-运行命令：
-
-```powershell
-uv run dgcheater-train stream-prototype --dataset dgraph_fin --data-path data/DGraphFin/DGraphFin1 --event-count 5000 --trace-top-k 20
-```
-
-输出文件：
-
-- `output\streaming\transaction_stream_sample.csv`
-- `output\streaming\risk_events.csv`
-- `output\streaming\risk_events.sqlite`
-- `output\streaming\ring_trace_summary.json`
-- `output\streaming\performance_report.md`
-
-本机 5000 条事件回放实测：事件吞吐约 `44231.03` events/second，纯评分吞吐约 `127411.78` nodes/second，平均节点评分延迟约 `0.0078 ms`。
-
-展示面板会读取这些流式产物，生成风险事件列表、案件处置状态、审计记录和一跳邻域溯源视图；同时补充循环转账、分散汇集、集中转出和账户团伙四类仿真欺诈剧本。
-
-本地实时大屏：
-
-```powershell
-just live-store
-just live-dashboard
-just live-open
-```
-
-页面地址是 `http://127.0.0.1:8050`。前端会轮询 `/api/risk-events`，从事件库读取最新风险案件。
-
-## Kafka/Flink 部署原型
-
-当前已补充完整 Kafka、Flink 与 PostgreSQL 本地部署包，见 [kafka-flink.md](docs/online-deployment/kafka-flink.md)。
-
-部署组件包括：
-
-- Kafka broker 与 Kafka UI
-- Flink JobManager 与 TaskManager
-- PyFlink 风险处理作业
-- 独立 HTTP 风险评分服务
-- Kafka 事件 producer 与结果 consumer
-- PostgreSQL 风险事件表
-- 实时大屏服务
-
-启动命令：
-
-```powershell
-just stream-up
-just stream-wait
-just stream-smoke
-```
-
-其中业务检查与冒烟流程放在 `scripts/` 下，Docker 只负责环境启动，`justfile` 只负责任务编排。
 
 需要注意的是，`IEEE-CIS` 在随机分层切分下会得到更乐观的离线结果，因此当前项目已改为基于 `TransactionDT` 的时间切分口径。
 

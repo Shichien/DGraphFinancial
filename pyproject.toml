@@ -30,7 +30,6 @@ report = [
 
 [project.scripts]
 dgcheater-train = "dgcheater.cli:app"
-dgcheater-stream = "dgcheater.streaming.runtime:app"
 dgcheater-realtime = "dgcheater.realtime.pipeline:app"
 dgcheater-realtime-api = "dgcheater.realtime.dashboard_api:serve_app"
 dev-system = "dgcheater.realtime.dev_system:app"

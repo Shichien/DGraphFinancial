@@ -5,13 +5,11 @@ from pathlib import Path
 import typer
 
 from .core.config import APP_CONFIG, DEFAULT_OUTPUT_DIR
-from .dashboard.builder import build_showcase_dashboard
 from .datasets.registry import DATASET_SPECS, get_dataset_spec
 from .dgraph.features import build_features, get_or_create_feature_cache
 from .models.training import fit_lightgbm_baseline, fit_tabular_blend, fit_xgboost, fit_xgboost_without_label_neighbors
 from .datasets.loaders import TabularDataset, load_dataset_from_spec
 from .reporting.metrics import build_feature_importance_markdown, build_metrics_summary
-from .streaming.prototype import result_to_json, run_streaming_prototype
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -119,41 +117,6 @@ def report_metrics(
     build_metrics_summary(metrics_path, output_path)
     build_feature_importance_markdown(importance_path, importance_output_path, top_k=APP_CONFIG.reporting.top_feature_count)
     typer.echo(f"Saved summary to {output_path}")
-
-
-@app.command("build-dashboard")
-def build_dashboard(
-    output_path: Path = typer.Option(APP_CONFIG.dashboard.output_path),
-    output_dir: Path = typer.Option(DEFAULT_OUTPUT_DIR),
-) -> None:
-    """Build a self-contained showcase dashboard for experiments and datasets."""
-    result = build_showcase_dashboard(output_path=output_path, output_dir=output_dir)
-    typer.echo(f"Saved dashboard to {result}")
-
-
-@app.command("stream-prototype")
-def stream_prototype(
-    dataset: str = typer.Option(APP_CONFIG.streaming.prototype.dataset),
-    data_path: Path | None = typer.Option(None, file_okay=True, dir_okay=True),
-    output_dir: Path = typer.Option(DEFAULT_OUTPUT_DIR),
-    event_count: int = typer.Option(APP_CONFIG.streaming.prototype.event_count, min=100, max=200_000),
-    trace_top_k: int = typer.Option(APP_CONFIG.streaming.prototype.trace_top_k, min=1, max=200),
-    seed: int = typer.Option(APP_CONFIG.training.seed),
-) -> None:
-    """Replay graph transactions, score risks, trace rings and measure latency."""
-    spec = get_dataset_spec(dataset)
-    raw = load_dataset_from_spec(spec, data_path or spec.default_path)
-    if isinstance(raw, TabularDataset):
-        raise typer.BadParameter("stream-prototype currently requires a graph dataset.")
-    result = run_streaming_prototype(
-        raw,
-        dataset_key=spec.key,
-        output_dir=output_dir,
-        event_count=event_count,
-        trace_top_k=trace_top_k,
-        seed=seed,
-    )
-    typer.echo(result_to_json(result))
 
 
 if __name__ == "__main__":

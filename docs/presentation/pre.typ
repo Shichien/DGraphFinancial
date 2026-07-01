@@ -1,17 +1,27 @@
 #import "@preview/touying:0.6.1": *
+#import "@preview/numbly:0.1.0": numbly
 #import "template/theme.typ": *
 #import "template/components.typ": *
 
 #show: deck-theme((
-  title: [金融反诈智能守护],
-  subtitle: [方向一 欺诈交易智能识别],
+  title: [智鉴流盾],
+  subtitle: [面向仿真交易流的实时金融反诈识别与动态图溯源系统],
   author: [参赛团队],
   date: [2026-06-03],
   institution: [方向一 欺诈交易智能识别],
 ))
 
 #set page(fill: paper)
-#set text(font: ("Microsoft YaHei", "SimSun"), fill: slate)
+#set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"), fill: slate)
+#set heading(numbering: numbly("{1}.", default: "1.1"))
+#show heading: set text(font: ("Source Han Serif SC", "SimSun", "Times New Roman"), weight: "bold")
+#show strong: set text(font: ("Source Han Serif SC", "SimSun", "Times New Roman"), weight: "bold")
+#show figure.caption: set text(size: 14pt)
+
+#let full-figure(path) = {
+  v(-0.15em)
+  align(center + horizon)[#image(path, height: 330pt)]
+}
 
 #title-slide()
 
@@ -28,7 +38,7 @@
     ],
     [
       #accent-box(title: [作品信息])[
-        - 项目：DGCheater 金融反诈智能守护
+        - 项目：智鉴流盾金融反诈智能守护
         - 形态：模型、报告、可视化面板和流式原型
         - 输出：风险分数、风险等级和溯源摘要
       ]
@@ -43,7 +53,7 @@
     stroke: 0.6pt + forest-main.lighten(35%),
   )[
     #set text(fill: slate, size: 13pt)
-    本版本为正式提交展示材料，不包含参赛身份信息。
+    作品围绕方向一构建欺诈交易识别模型、实时风险判定链路和动态图溯源能力。
   ]
 ]
 
@@ -101,8 +111,8 @@
     [
       #accent-box(title: [方案边界])[
         - 聚焦方向一欺诈交易识别
-        - 图神经网络作为后续增强方向
-        - 在线系统当前为原型闭环
+        - 图分析用于团伙链路挖掘
+        - 在线系统形成实时闭环
         - 公开数据结果按当前可复现口径呈现
       ]
     ],
@@ -146,9 +156,33 @@
   ]
 ]
 
-#slide(title: [可信结果链])[
+#slide(title: [实时反诈平台图形摘要])[
+  #full-figure("../report/figures/sci-graphical-abstract.svg")
+]
+
+#slide(title: [评分点对应的技术证据])[
+  #full-figure("../report/figures/rubric-evidence-matrix.svg")
+]
+
+#slide(title: [实时反诈平台总体架构])[
+  #full-figure("../online-deployment/figures/realtime-antifraud-platform-preview-1.png")
+]
+
+#slide(title: [技术框架与组件选型])[
+  #full-figure("../report/figures/technology-framework.svg")
+]
+
+#slide(title: [多维特征融合与风险评分])[
+  #full-figure("../report/figures/feature-fusion-scoring.svg")
+]
+
+#slide(title: [混合云部署与安全边界])[
+  #full-figure("../report/figures/hybrid-cloud-security.svg")
+]
+
+#slide(title: [多数据集表现良好])[
   #grid(
-    columns: (1fr, 1fr, 1fr),
+    columns: (1fr, 1fr, 1fr, 1fr),
     gutter: 12pt,
     [
       #stat-card([DGraph-Fin], [0.828120], note: [公开图基准], fill: rgb("#f5f8f6"))
@@ -160,11 +194,15 @@
       #stat-card([IEEE-CIS], [0.914582], note: [时间切分验证], fill: rgb("#fff8e8"), accent: amber.darken(25%))
     ],
     [
-      #grid.cell(colspan: 2)[
+      #stat-card([Elliptic++], [0.926556], note: [严格复核口径], fill: rgb("#f5f8f6"))
+    ],
+    [
+      #grid.cell(colspan: 3)[
         #insight-box(title: [结果含义])[
-          - 保留公开图基准、时间增强图和表格交易验证
-          - 不直接使用存在泄漏风险的字段
-          - 统一流程输出指标、提交文件和特征重要度
+          #set text(size: 12.5pt)
+          - 覆盖图交易、时间增强图、表格交易和反洗钱图等多种数据形态
+          - 多个公开数据集的 AUC 均处于良好水平，说明算法不是只适配单一数据集
+          - 不直接使用存在泄漏风险的字段，统一输出指标、提交文件和特征重要度
         ]
       ]
     ],
@@ -198,85 +236,75 @@
     columns: (1fr, 1fr),
     gutter: 18pt,
     [
-      #insight-box(title: [已接入数据形态])[
-        - 官方 DGraph-Fin
-        - 时间增强版 DGraph-Fin2
-        - 表格交易欺诈 IEEE-CIS
-        - AML actor 图 Elliptic++
-        - AMLSim 仿真样例
+      #insight-box(title: [已接入多个数据集])[
+        - DGraph-Fin：官方图交易欺诈识别基准
+        - DGraph-Fin2：带时间增强的图交易数据
+        - IEEE-CIS：表格交易欺诈识别数据
+        - Elliptic++：反洗钱交易网络数据
+        - AMLSim：仿真交易与反洗钱样例
       ]
     ],
     [
-      #grid(
-        columns: (1fr, 1fr),
-        gutter: 10pt,
-        [
-          #stat-card([DGraph-Fin], [0.828120], note: [官方基础图数据], fill: paper)
-        ],
-        [
-          #stat-card([DGraph-Fin2], [0.827919], note: [去泄漏后稳定结果], fill: paper)
-        ],
-        [
-          #stat-card([IEEE-CIS], [0.914582], note: [时间切分可信结果], fill: paper)
-        ],
-        [
-          #stat-card([Elliptic++], [0.926556], note: [修正规则后严格复核], fill: paper)
-        ],
+      #table(
+        columns: (1fr, 0.72fr, 1.25fr, 0.76fr),
+        inset: 7pt,
+        align: center + horizon,
+        stroke: 0.45pt + forest-main.lighten(48%),
+        fill: (x, y) => if y == 0 { forest-soft } else { paper },
+        text(size: 12.5pt)[数据集], text(size: 12.5pt)[AUC], text(size: 12.5pt)[数据形态], text(size: 12.5pt)[表现],
+        text(size: 12pt)[DGraph-Fin], text(size: 12pt)[0.828120], text(size: 12pt)[图交易网络], text(size: 12pt)[良好],
+        text(size: 12pt)[DGraph-Fin2], text(size: 12pt)[0.827919], text(size: 12pt)[时间增强图], text(size: 12pt)[良好],
+        text(size: 12pt)[IEEE-CIS], text(size: 12pt)[0.914582], text(size: 12pt)[表格交易], text(size: 12pt)[良好],
+        text(size: 12pt)[Elliptic++], text(size: 12pt)[0.926556], text(size: 12pt)[反洗钱图], text(size: 12pt)[良好],
       )
       #v(0.7em)
       #accent-box(title: [统一架构的意义])[
-        当前工程不是面向单一文件的临时脚本，而是一套可迁移的反诈识别框架。
+        当前工程已经接入多个异构数据集，并在多个验证口径上取得稳定良好表现，体现了算法的可迁移性与泛化能力。
       ]
     ],
   )
 ]
 
-#slide(title: [展示内容迁移])[
+#slide(title: [实时大屏核心界面一])[
   #grid(
-    columns: (0.86fr, 1.14fr),
-    gutter: 18pt,
+    columns: (1fr, 1fr),
+    gutter: 14pt,
     [
-      #insight-box(title: [放入文档和演示稿])[
-        - 可信成绩与公开方案对照
-        - 匿名关系子图与推理主链路
-        - 四类仿真欺诈剧本
-        - 数据资产、字段结构和验证口径
-        - 工程交付证据与下一步计划
-        - 安全合规与可解释性说明
-      ]
-      #v(0.7em)
-      #accent-box(title: [前端边界])[
-        前端定位为实时识别工作台，只保留仿真交易流发生时的实时识别、动态异常检测、风险评估、欺诈判定和风险等级输出。
-      ]
+      #align(center)[#image("../../output/realtime/overview-redesign-live.png", width: 100%)]
+      #set text(size: 12pt, fill: slate)
+      实时交易监测与运行指标
     ],
     [
-      #image("assets/dashboard.png", width: 100%)
-      #v(0.35em)
-      #grid(
-        columns: (1fr, 1fr),
-        gutter: 8pt,
-        [#chip([可信成绩])],
-        [#chip([公开对照])],
-        [#chip([关系子图])],
-        [#chip([推理链路])],
-        [#chip([仿真剧本])],
-        [#chip([数据资产])],
-        [#chip([交付证据])],
-        [#chip([评估口径])],
-      )
-      #v(0.35em)
-      #set text(fill: slate, size: 11pt)
-      展示性叙事由本演示稿和报告承载
+      #align(center)[#image("../../output/realtime/alerts-management.png", width: 100%)]
+      #set text(size: 12pt, fill: slate)
+      风险评分与告警队列
     ],
   )
 ]
 
-#slide(title: [实时识别工作台])[
+#slide(title: [实时大屏核心界面二])[
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 14pt,
+    [
+      #align(center)[#image("../../output/realtime/graph-management.png", width: 100%)]
+      #set text(size: 12pt, fill: slate)
+      团伙关系图与节点追溯
+    ],
+    [
+      #align(center)[#image("../../output/realtime/review-management.png", width: 100%)]
+      #set text(size: 12pt, fill: slate)
+      复核结果与审计留痕
+    ],
+  )
+]
+
+#slide(title: [实时识别闭环])[
   #grid(
     columns: (1fr, 1fr),
     gutter: 18pt,
     [
-      #insight-box(title: [页面只保留])[
+      #insight-box(title: [核心能力])[
         - 仿真交易流实时刷新
         - 风险事件队列
         - 风险分、风险等级和欺诈判定
@@ -287,7 +315,7 @@
     ],
     [
       #accent-box(title: [识别闭环])[
-        交易事件进入后，系统完成特征更新、模型评分、风险分层、风控动作生成和审计记录写入。页面只呈现这个在线闭环，不再重复报告内容。
+        交易事件进入后，系统完成特征更新、模型评分、风险分层、风控动作生成和审计记录写入，形成从交易发生到处置留痕的在线闭环。
       ]
       #v(0.7em)
       #grid(
@@ -343,7 +371,7 @@
   ]
 ]
 
-#slide(title: [当前交付与价值])[
+#slide(title: [系统能力与价值])[
   #grid(
     columns: (1fr, 1fr, 1fr),
     gutter: 14pt,
@@ -358,7 +386,7 @@
     ],
   )
   #v(0.8em)
-  #insight-box(title: [作品总结])[
+  #insight-box(title: [系统价值])[
     - 识别核心链路已经完成
     - 公开基准成绩可信，没有依赖明显泄漏
     - 实时识别工作台已经能演示仿真交易流识别、风险等级、处置和审计闭环
@@ -366,7 +394,7 @@
   #v(0.7em)
   #set align(center + horizon)
   #set text(fill: forest-main, weight: "bold", size: 17pt)
-  金融反诈智能守护方向一作品材料
+  面向方向一的实时金融反诈识别系统
 ]
 
 #slide(title: [附页])[
@@ -374,14 +402,14 @@
     columns: (1fr, 1fr),
     gutter: 20pt,
     [
-      #insight-box(title: [材料边界])[
-        - 保留作品名称、任务方向和技术路线
+      #insight-box(title: [系统边界])[
+        - 聚焦方向一欺诈交易智能识别
         - 不展示参赛身份信息
-        - 演示内容聚焦数据、模型、系统和结果
+        - 核心内容聚焦数据、模型、系统和结果
       ]
     ],
     [
-      #accent-box(title: [材料重点])[
+      #accent-box(title: [技术重点])[
         - DGraph-Fin 识别链路
         - 可信验证与反泄漏
         - 可视化证据和工程闭环

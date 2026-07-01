@@ -71,108 +71,6 @@ class ReportingSettings:
 
 
 @dataclass(frozen=True, slots=True)
-class DashboardSettings:
-    output_path: Path
-
-    @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "DashboardSettings":
-        return cls(output_path=Path(data["output_path"]))
-
-
-@dataclass(frozen=True, slots=True)
-class StreamPrototypeSettings:
-    dataset: str
-    event_count: int
-    trace_top_k: int
-
-    @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "StreamPrototypeSettings":
-        return cls(
-            dataset=str(data["dataset"]),
-            event_count=int(data["event_count"]),
-            trace_top_k=int(data["trace_top_k"]),
-        )
-
-
-@dataclass(frozen=True, slots=True)
-class StreamingRuntimeSettings:
-    dataset: str
-    data_path: Path
-    output_dir: Path
-    kafka_bootstrap_servers: str
-    input_topic: str
-    output_topic: str
-    scorer_url: str
-    host: str
-    port: int
-    batch_size: int
-    event_count: int
-    replay_interval_ms: int
-    result_output_path: Path
-    consume_max_messages: int
-    consume_timeout_seconds: int
-    score_http_event_count: int
-    database_url: str
-
-    @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "StreamingRuntimeSettings":
-        return cls(
-            dataset=str(data["dataset"]),
-            data_path=Path(data["data_path"]),
-            output_dir=Path(data["output_dir"]),
-            kafka_bootstrap_servers=str(data["kafka_bootstrap_servers"]),
-            input_topic=str(data["input_topic"]),
-            output_topic=str(data["output_topic"]),
-            scorer_url=str(data["scorer_url"]),
-            host=str(data["host"]),
-            port=int(data["port"]),
-            batch_size=int(data["batch_size"]),
-            event_count=int(data["event_count"]),
-            replay_interval_ms=int(data["replay_interval_ms"]),
-            result_output_path=Path(data["result_output_path"]),
-            consume_max_messages=int(data["consume_max_messages"]),
-            consume_timeout_seconds=int(data["consume_timeout_seconds"]),
-            score_http_event_count=int(data["score_http_event_count"]),
-            database_url=str(data["database_url"]),
-        )
-
-
-@dataclass(frozen=True, slots=True)
-class HealthEndpoint:
-    name: str
-    url: str
-
-    @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "HealthEndpoint":
-        return cls(name=str(data["name"]), url=str(data["url"]))
-
-
-@dataclass(frozen=True, slots=True)
-class StreamingSettings:
-    compose_file: Path
-    wait_timeout_seconds: float
-    wait_interval_seconds: float
-    health_request_timeout_seconds: float
-    smoke_result_lines: int
-    prototype: StreamPrototypeSettings
-    runtime: StreamingRuntimeSettings
-    health_endpoints: tuple[HealthEndpoint, ...]
-
-    @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "StreamingSettings":
-        return cls(
-            compose_file=Path(data["compose_file"]),
-            wait_timeout_seconds=float(data["wait_timeout_seconds"]),
-            wait_interval_seconds=float(data["wait_interval_seconds"]),
-            health_request_timeout_seconds=float(data["health_request_timeout_seconds"]),
-            smoke_result_lines=int(data["smoke_result_lines"]),
-            prototype=StreamPrototypeSettings.from_mapping(data["prototype"]),
-            runtime=StreamingRuntimeSettings.from_mapping(data["runtime"]),
-            health_endpoints=tuple(HealthEndpoint.from_mapping(item) for item in data["health_endpoints"]),
-        )
-
-
-@dataclass(frozen=True, slots=True)
 class RiskLevel:
     level: str
     threshold: float
@@ -285,8 +183,6 @@ class AppConfig:
     datasets: dict[str, Path]
     training: TrainingSettings
     reporting: ReportingSettings
-    dashboard: DashboardSettings
-    streaming: StreamingSettings
     risk_levels: tuple[RiskLevel, ...]
     models: ModelSettings
 
@@ -297,8 +193,6 @@ class AppConfig:
             datasets={key: Path(value) for key, value in data["datasets"].items()},
             training=TrainingSettings.from_mapping(data["training"]),
             reporting=ReportingSettings.from_mapping(data["reporting"]),
-            dashboard=DashboardSettings.from_mapping(data["dashboard"]),
-            streaming=StreamingSettings.from_mapping(data["streaming"]),
             risk_levels=tuple(RiskLevel.from_mapping(item) for item in data["risk_levels"]),
             models=ModelSettings.from_mapping(data["models"]),
         )

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfdff"/>
+      <stop offset="1" stop-color="#f5f7f6"/>
+    </linearGradient>
+    <filter id="shadow" x="-16%" y="-16%" width="132%" height="132%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#23364a" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto">
+      <path d="M1.5,1.5 L11,6.5 L1.5,11.5 Z" fill="#40566e"/>
+    </marker>
+    <marker id="safe-arrow" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto">
+      <path d="M1.5,1.5 L11,6.5 L1.5,11.5 Z" fill="#2e7d59"/>
+    </marker>
+    <style>
+      .title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:34px;font-weight:700;fill:#172331}
+      .sub{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:19px;fill:#657484}
+      .zone-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:25px;font-weight:700;fill:#1f2d3a}
+      .node-title{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:20px;font-weight:700;fill:#1f2d3a}
+      .t{font-family:"Source Han Serif SC","SimSun","Times New Roman",serif;font-size:16px;fill:#3d4f61}
+      .s{font-family:"Times New Roman","Source Han Serif SC","SimSun",serif;font-size:15px;fill:#667585}
+      .line{fill:none;stroke:#40566e;stroke-width:3.5;marker-end:url(#arrow)}
+      .safe{fill:none;stroke:#2e7d59;stroke-width:3.2;stroke-dasharray:10 8;marker-end:url(#safe-arrow)}
+      .zone{fill:#ffffff;stroke:#d8e1ea;stroke-width:2}
+      .node{fill:#ffffff;stroke:#cbd8e5;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1600" height="920" fill="url(#bg)"/>
+  <text x="80" y="72" class="title">混合云部署与全生命周期安全边界</text>
+  <text x="82" y="108" class="sub">elastic stream computing in cloud · sensitive state in private network · encrypted and auditable data path</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="165" width="460" height="610" rx="28" class="zone"/>
+    <text x="120" y="218" class="zone-title">云侧弹性计算区</text>
+    <text x="120" y="250" class="s">承接高并发交易流与实时计算</text>
+
+    <rect x="125" y="305" width="350" height="90" rx="18" fill="#eef6ff" stroke="#a6c8ec"/>
+    <text x="155" y="345" class="node-title">Kafka 与 Schema Registry</text>
+    <text x="155" y="374" class="t">主题权限、字段契约、消息追踪</text>
+
+    <rect x="125" y="445" width="350" height="90" rx="18" fill="#eff9f1" stroke="#a9d2b0"/>
+    <text x="155" y="485" class="node-title">Flink 状态化特征作业</text>
+    <text x="155" y="514" class="t">窗口特征、设备 IP 状态、延迟指标</text>
+
+    <rect x="125" y="585" width="350" height="90" rx="18" fill="#fff4e5" stroke="#e7bf7d"/>
+    <text x="155" y="625" class="node-title">模型评分服务</text>
+    <text x="155" y="654" class="t">风险分、等级、原因码、处置动作</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="610" y="165" width="420" height="610" rx="28" class="zone"/>
+    <text x="660" y="218" class="zone-title">安全网关与访问控制</text>
+    <text x="660" y="250" class="s">跨平台传输只保留匿名标识和必要特征</text>
+
+    <rect x="665" y="320" width="310" height="95" rx="18" fill="#f6f8fb" stroke="#ccd8e5"/>
+    <text x="695" y="360" class="node-title">TLS 加密传输</text>
+    <text x="695" y="389" class="t">服务间通信与大屏访问加密</text>
+
+    <rect x="665" y="470" width="310" height="95" rx="18" fill="#f6f8fb" stroke="#ccd8e5"/>
+    <text x="695" y="510" class="node-title">密钥与最小权限</text>
+    <text x="695" y="539" class="t">账号隔离、密钥注入、权限收敛</text>
+
+    <rect x="665" y="620" width="310" height="95" rx="18" fill="#f6f8fb" stroke="#ccd8e5"/>
+    <text x="695" y="660" class="node-title">审计日志</text>
+    <text x="695" y="689" class="t">评分、复核、处置和查询留痕</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1110" y="165" width="420" height="610" rx="28" class="zone"/>
+    <text x="1160" y="218" class="zone-title">私有网络敏感状态区</text>
+    <text x="1160" y="250" class="s">保存风险事件、关系图谱和审计状态</text>
+
+    <rect x="1165" y="305" width="310" height="90" rx="18" fill="#f6f3ff" stroke="#c7b8e7"/>
+    <text x="1195" y="345" class="node-title">PostgreSQL 风险事件库</text>
+    <text x="1195" y="374" class="t">事件、原因、关联边、处置记录</text>
+
+    <rect x="1165" y="445" width="310" height="90" rx="18" fill="#fff5f5" stroke="#e6b2b2"/>
+    <text x="1195" y="485" class="node-title">Redis 实时风险缓存</text>
+    <text x="1195" y="514" class="t">高危榜、近期告警、团伙排名</text>
+
+    <rect x="1165" y="585" width="310" height="90" rx="18" fill="#f1f8f7" stroke="#a8d0c8"/>
+    <text x="1195" y="625" class="node-title">Neo4j 异构关系图谱</text>
+    <text x="1195" y="654" class="t">账户、设备、IP、商户和团伙</text>
+  </g>
+
+  <path class="line" d="M300 395 C300 420 300 420 300 445"/>
+  <path class="line" d="M300 535 C300 560 300 560 300 585"/>
+  <path class="safe" d="M475 350 C555 350 585 365 665 367"/>
+  <path class="safe" d="M475 630 C555 630 585 517 665 517"/>
+  <path class="safe" d="M975 367 C1045 367 1090 350 1165 350"/>
+  <path class="safe" d="M975 517 C1045 517 1090 490 1165 490"/>
+  <path class="safe" d="M975 667 C1045 667 1090 630 1165 630"/>
+
+  <g filter="url(#shadow)">
+    <rect x="205" y="815" width="1190" height="58" rx="18" fill="#eef5f2" stroke="#c8ddd2"/>
+    <text x="250" y="850" class="t">安全原则：匿名化输入、字段级约束、链路加密、权限最小化、敏感状态隔离、审计可追踪、模型输出可解释</text>
+  </g>
+</svg>

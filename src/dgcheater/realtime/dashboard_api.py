@@ -24,7 +24,7 @@ from .simulator import MultiSourceFraudSimulator, SimulatorConfig
 from .storage import RiskEventRepository
 
 
-app = FastAPI(title="DGCheater realtime anti-fraud API")
+app = FastAPI(title="智鉴流盾实时反诈 API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

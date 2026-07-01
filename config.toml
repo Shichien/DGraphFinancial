@@ -28,52 +28,6 @@ importance_path = "output/figures/feature_importance.csv"
 importance_output_path = "output/figures/feature_importance.md"
 top_feature_count = 15
 
-[dashboard]
-output_path = "output/dashboard/index.html"
-
-[streaming]
-compose_file = "deploy/streaming/docker-compose.yml"
-wait_timeout_seconds = 120.0
-wait_interval_seconds = 2.0
-health_request_timeout_seconds = 5.0
-smoke_result_lines = 3
-
-[streaming.prototype]
-dataset = "dgraph_fin"
-event_count = 5000
-trace_top_k = 20
-
-[streaming.runtime]
-dataset = "dgraph_fin"
-data_path = "data/DGraphFin/DGraphFin1"
-output_dir = "output"
-kafka_bootstrap_servers = "localhost:9092"
-input_topic = "transactions.raw"
-output_topic = "transactions.risk"
-scorer_url = "http://localhost:8000/score-batch"
-host = "0.0.0.0"
-port = 8000
-batch_size = 256
-event_count = 5000
-replay_interval_ms = 0
-result_output_path = "output/streaming/kafka_risk_events.jsonl"
-consume_max_messages = 1000
-consume_timeout_seconds = 60
-score_http_event_count = 10
-database_url = "sqlite:///output/streaming/risk_events.sqlite"
-
-[[streaming.health_endpoints]]
-name = "Kafka UI"
-url = "http://localhost:8088/actuator/health"
-
-[[streaming.health_endpoints]]
-name = "Flink UI"
-url = "http://localhost:8081/overview"
-
-[[streaming.health_endpoints]]
-name = "Risk health"
-url = "http://localhost:8000/health"
-
 [[risk_levels]]
 level = "critical"
 threshold = 0.85

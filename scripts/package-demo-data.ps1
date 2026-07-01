@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
-$zipPath = Join-Path $repoRoot "output\share\DGCheater-demo-data-runtime.zip"
+$zipPath = Join-Path $repoRoot "output\share\zhijian-liudun-demo-data-runtime.zip"
 $stagePath = Join-Path $repoRoot ("tmp\demo-data-runtime-" + (Get-Date -Format "yyyyMMddHHmmss"))
 
 $requiredFiles = @(

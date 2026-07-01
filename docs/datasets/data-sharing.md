@@ -36,7 +36,7 @@
 当前已生成的演示包位置：
 
 ```text
-output/share/DGCheater-demo-data-runtime.zip
+output/share/zhijian-liudun-demo-data-runtime.zip
 ```
 
 解压时保持目录结构不变，直接覆盖到项目根目录即可。解压后，实时大屏可以使用内置仿真数据、DGraph 风险先验回放和 AMLSim 样例数据。IEEE-CIS 选项需要另行下载 Kaggle 数据后才可复现。
@@ -55,7 +55,7 @@ Google 云盘上传需要账号授权。本机当前没有可用的命令行上�
 
 ```powershell
 rclone config
-rclone copy output/share/DGCheater-demo-data-runtime.zip gdrive:DGCheater/
+rclone copy output/share/zhijian-liudun-demo-data-runtime.zip gdrive:zhijian-liudun/
 ```
 
 其中 `gdrive:` 是你本机配置的 Google 云盘名称。配置完成后，再执行上传命令即可。
