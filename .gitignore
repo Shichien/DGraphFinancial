@@ -19,6 +19,8 @@ wheels/
 *.egg-info/
 pip-wheel-metadata/
 node_modules/
+frontend/graph-stream/output/
+*.log
 
 # Virtual environments and local environment files
 .venv/
